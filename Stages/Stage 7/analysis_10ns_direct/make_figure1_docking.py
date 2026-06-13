@@ -78,8 +78,7 @@ def apply_pub_style():
 
 
 def save_pub_figure(fig, path_stem):
-    for ext in (".png", ".pdf"):
-        fig.savefig(path_stem + ext, dpi=PUB_DPI, bbox_inches="tight")
+    fig.savefig(path_stem + ".pdf", dpi=PUB_DPI, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -164,18 +163,11 @@ def plot_figure1(seed_data, out_dir):
     ax.set_xticks(tick_positions)
     ax.set_xticklabels(tick_labels)
 
-    # Compound name labels below the two pairs
-    for comp, meta in COMPOUND_META.items():
-        mid = (meta["x_wt"] + meta["x_mut"]) / 2
-        ax.text(mid, ax.get_ylim()[0] if ax.get_ylim()[0] < -8.5 else -8.55,
-                meta["label"], ha="center", va="top", fontsize=8,
-                fontweight="bold", color="black")
-
     # ── Axes decoration ───────────────────────────────────────────────────
     ax.set_ylabel("Docking affinity (kcal/mol)")
     ax.set_xlim(0.4, 5.6)
 
-    # Leave enough headroom above and below
+    # Set y-limits before compound label annotations so ax.get_ylim() is reliable
     all_means = []
     all_sds   = []
     for comp, states in seed_data.items():
@@ -188,6 +180,13 @@ def plot_figure1(seed_data, out_dir):
         y_min = min(m - s for m, s in zip(all_means, all_sds)) - 0.35
         y_max = max(m + s for m, s in zip(all_means, all_sds)) + 0.35
         ax.set_ylim(y_min, y_max)
+
+    # Compound name labels below the two pairs
+    for comp, meta in COMPOUND_META.items():
+        mid = (meta["x_wt"] + meta["x_mut"]) / 2
+        ax.text(mid, ax.get_ylim()[0],
+                meta["label"], ha="center", va="top", fontsize=8,
+                fontweight="bold", color="black")
 
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
     ax.axhline(-7.0, color="silver", linewidth=0.7, linestyle=":",
@@ -202,7 +201,7 @@ def plot_figure1(seed_data, out_dir):
     fig.tight_layout()
     out_stem = str(out_dir / "figure1_docking_affinities")
     save_pub_figure(fig, out_stem)
-    print(f"  figure1_docking_affinities.png / .pdf")
+    print(f"  figure1_docking_affinities.pdf")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────

@@ -33,6 +33,8 @@ CASES = list(CASE_META.keys())
 PUB_DPI = 600
 LINE_W = 1.5   # pt — visible at 600 DPI without looking heavy
 FILL_A = 0.12  # std-band alpha — low enough not to clog overlapping bands
+# Contiguous binding-site residue range (PLIF top-15 + PLIP contacts ± 5 residues, no gap)
+POCKET_RESID_RANGE = (577, 880)
 
 
 def apply_pub_style():
@@ -54,8 +56,7 @@ def apply_pub_style():
 
 
 def save_pub_figure(fig, path_stem):
-    for ext in (".png", ".pdf"):
-        fig.savefig(path_stem + ext, dpi=PUB_DPI, bbox_inches="tight")
+    fig.savefig(path_stem + ".pdf", dpi=PUB_DPI, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -77,6 +78,13 @@ def _load(results_dir, case, subdir, filename, index_col=None, comment=None):
 
 def _short_label(case):
     return CASE_META[case]["label"].split(" (")[0]
+
+
+def _clean_bond_label(label):
+    """Replace UNK1 residue name with Lig and strip trailing x from atom names."""
+    import re
+    label = label.replace("UNK1", "Lig")
+    return re.sub(r'([A-Z]\d+)x\b', r'\1', label)
 
 
 # ── 1. Backbone RMSD time series ─────────────────────────────────────────────
@@ -102,7 +110,7 @@ def plot_backbone_rmsd(results_dir, out_dir):
     ax.legend(loc="upper left")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "backbone_rmsd_overlay"))
-    print("  backbone_rmsd_overlay.png")
+    print("  backbone_rmsd_overlay.pdf")
 
 
 # ── 2. Ligand RMSD time series ───────────────────────────────────────────────
@@ -128,7 +136,7 @@ def plot_ligand_rmsd(results_dir, out_dir):
     ax.legend(loc="upper left")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "ligand_rmsd_overlay"))
-    print("  ligand_rmsd_overlay.png")
+    print("  ligand_rmsd_overlay.pdf")
 
 
 # ── 3. RMSF per-residue ──────────────────────────────────────────────────────
@@ -153,8 +161,43 @@ def plot_rmsf(results_dir, out_dir):
     ax.grid(True, alpha=0.3, linestyle="--")
     ax.legend(loc="upper right")
     fig.tight_layout()
-    save_pub_figure(fig, str(out_dir / "rmsf_overlay"))
-    print("  rmsf_overlay.png")
+    save_pub_figure(fig, str(out_dir / "rmsf_full_genome"))
+    print("  rmsf_full_genome.pdf")
+
+
+# ── 3b. Pocket-region RMSF (main text) ──────────────────────────────────────
+def plot_rmsf_pocket(results_dir, out_dir):
+    """Binding-site RMSF (res 577–880) for main text; rmsf_full_genome → supplementary."""
+    fig, ax = plt.subplots(figsize=(7, 4))
+    any_data = False
+    y_max = 0.0
+    lo, hi = POCKET_RESID_RANGE
+    for case in CASES:
+        df = _load(results_dir, case, "rmsf_10ns_direct", f"{case}_rmsf.csv")
+        if df is None:
+            continue
+        df = df[(df["resid"] >= lo) & (df["resid"] <= hi)]
+        if df.empty:
+            continue
+        m = CASE_META[case]
+        ax.plot(df["resid"], df["rmsf_A_mean"], color=m["color"],
+                linestyle=m["linestyle"], lw=LINE_W, label=m["label"])
+        ax.fill_between(df["resid"], df["rmsf_A_mean"] - df["rmsf_A_std"],
+                        df["rmsf_A_mean"] + df["rmsf_A_std"], color=m["color"], alpha=FILL_A)
+        y_max = max(y_max, (df["rmsf_A_mean"] + df["rmsf_A_std"]).max())
+        any_data = True
+    if not any_data:
+        plt.close(fig); return
+    ax.set_xlabel("Residue ID")
+    ax.set_ylabel("RMSF (Å)")
+    ax.set_ylim(bottom=0, top=y_max * 1.12)
+    ax.grid(True, alpha=0.3, linestyle="--")
+    ax.legend(loc="upper right")
+    ax.axvline(730, color="gray", linewidth=0.8, linestyle=":", alpha=0.7)
+    ax.text(731, y_max * 1.05, "W730A", fontsize=7, color="gray", va="top")
+    fig.tight_layout()
+    save_pub_figure(fig, str(out_dir / "rmsf_pocket"))
+    print("  rmsf_pocket.pdf")
 
 
 # ── 4. MM-GBSA time series ────────────────────────────────────────────────────
@@ -179,10 +222,10 @@ def plot_mmgbsa_timeseries(results_dir, out_dir):
     ax.set_xlabel("Time (ns)")
     ax.set_ylabel("ΔG bind (kcal/mol)")
     ax.grid(True, alpha=0.3, linestyle="--")
-    ax.legend(loc="lower right")
+    ax.legend(loc="upper right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "mmgbsa_timeseries"))
-    print("  mmgbsa_timeseries.png")
+    print("  mmgbsa_timeseries.pdf")
 
 
 # ── 5. MM-GBSA bar ────────────────────────────────────────────────────────────
@@ -207,15 +250,18 @@ def plot_mmgbsa_bar(results_dir, out_dir):
                   yerr=[it["sem"] for it in items],
                   color=[it["color"] for it in items],
                   capsize=4, edgecolor="black", linewidth=0.5)
+    _hatches = ['', '///', '', 'xxx']
+    for bar, hatch in zip(bars, _hatches[:len(items)]):
+        bar.set_hatch(hatch)
     ax.set_xticks(x)
     ax.set_xticklabels([it["label"].split(":")[0] for it in items])
     ax.set_ylabel("ΔG bind (kcal/mol)")
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"]) for it in items]
-    ax.legend(handles, [it["label"] for it in items], fontsize=6, loc="lower right")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"], hatch=_hatches[i] if i < 4 else '') for i, it in enumerate(items)]
+    ax.legend(handles, [it["label"] for it in items], fontsize=7, loc="lower right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "mmgbsa_bar"))
-    print("  mmgbsa_bar.png")
+    print("  mmgbsa_bar.pdf")
 
 
 # ── 6. Pocket volume time series ──────────────────────────────────────────────
@@ -248,7 +294,7 @@ def plot_pocket_volume_timeseries(results_dir, out_dir):
     ax.legend(loc="upper right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "pocket_volume_timeseries"))
-    print("  pocket_volume_timeseries.png")
+    print("  pocket_volume_timeseries.pdf")
 
 
 # ── 7. Pocket volume bar ──────────────────────────────────────────────────────
@@ -270,19 +316,22 @@ def plot_pocket_volume_bar(results_dir, out_dir):
         return
     fig, ax = plt.subplots(figsize=(6, 4))
     x = np.arange(len(items))
-    ax.bar(x, [it["mean"] for it in items],
-           yerr=[it["std"] for it in items],
-           color=[it["color"] for it in items],
-           capsize=4, edgecolor="black", linewidth=0.5)
+    pv_bars = ax.bar(x, [it["mean"] for it in items],
+                     yerr=[it["std"] for it in items],
+                     color=[it["color"] for it in items],
+                     capsize=4, edgecolor="black", linewidth=0.5)
+    _hatches = ['', '///', '', 'xxx']
+    for bar, hatch in zip(pv_bars, _hatches[:len(items)]):
+        bar.set_hatch(hatch)
     ax.set_xticks(x)
     ax.set_xticklabels([it["label"].split(":")[0] for it in items])
     ax.set_ylabel("Pocket volume (Å³)")
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"]) for it in items]
-    ax.legend(handles, [it["label"] for it in items], fontsize=6, loc="upper right")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"], hatch=_hatches[i] if i < 4 else '') for i, it in enumerate(items)]
+    ax.legend(handles, [it["label"] for it in items], fontsize=7, loc="upper right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "pocket_volume_bar"))
-    print("  pocket_volume_bar.png")
+    print("  pocket_volume_bar.pdf")
 
 
 # ── 8. H-bond union heatmap ───────────────────────────────────────────────────
@@ -303,36 +352,36 @@ def plot_hbond_comparison(results_dir, out_dir):
             bond = row["donor_acceptor"]
             bond_max[bond] = max(bond_max.get(bond, 0.0), float(row["occupancy_pct"]))
 
-    top_bonds = sorted(bond_max, key=lambda b: bond_max[b], reverse=True)[:15]
+    top_bonds_raw = sorted(bond_max, key=lambda b: bond_max[b], reverse=True)[:15]
+    top_bonds_display = [_clean_bond_label(b) for b in top_bonds_raw]
 
-    matrix = np.zeros((len(top_bonds), len(CASES)))
+    matrix = np.zeros((len(top_bonds_raw), len(CASES)))
     for ci, case in enumerate(CASES):
         if case not in all_dfs:
             continue
         df = all_dfs[case].set_index("donor_acceptor")
-        for bi, bond in enumerate(top_bonds):
+        for bi, bond in enumerate(top_bonds_raw):
             if bond in df.index:
                 matrix[bi, ci] = float(df.loc[bond, "occupancy_pct"])
 
-    fig_h = max(4.0, len(top_bonds) * 0.38)
+    fig_h = max(4.0, len(top_bonds_raw) * 0.38)
     fig, ax = plt.subplots(figsize=(5, fig_h))
     im = ax.imshow(matrix, aspect="auto", cmap="YlOrRd", vmin=0, vmax=100)
     ax.set_xticks(range(len(CASES)))
-    ax.set_xticklabels([_short_label(c) for c in CASES], rotation=25, ha="right", fontsize=6)
-    ax.set_yticks(range(len(top_bonds)))
-    ax.set_yticklabels(top_bonds, fontsize=6)
+    ax.set_xticklabels([_short_label(c) for c in CASES], rotation=25, ha="right", fontsize=7)
+    ax.set_yticks(range(len(top_bonds_raw)))
+    ax.set_yticklabels(top_bonds_display, fontsize=7)
     for ci in range(len(CASES)):
-        for bi in range(len(top_bonds)):
+        for bi in range(len(top_bonds_raw)):
             val = matrix[bi, ci]
             if val >= 5:
                 ax.text(ci, bi, f"{val:.0f}%", ha="center", va="center",
-                        fontsize=5, color="black" if val < 65 else "white")
+                        fontsize=7, color="black" if val < 65 else "white")
     cbar = plt.colorbar(im, ax=ax, fraction=0.03, pad=0.04)
     cbar.set_label("Occupancy (%)", fontsize=7)
-    ax.set_title("H-bond occupancy — top 15 across all cases", fontsize=8)
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "hbond_union_heatmap"))
-    print("  hbond_union_heatmap.png")
+    print("  hbond_union_heatmap.pdf")
 
 
 # ── 9. PLIF comparison heatmap ────────────────────────────────────────────────
@@ -350,7 +399,7 @@ def plot_plif_comparison(results_dir, out_dir):
     combined["key"] = combined["residue"] + " | " + combined["interaction_type"]
 
     key_max = combined.groupby("key")["frequency_pct"].max()
-    top_keys = key_max.nlargest(25).index.tolist()
+    top_keys = key_max.nlargest(15).index.tolist()
 
     matrix = np.zeros((len(top_keys), len(CASES)))
     for ci, case in enumerate(CASES):
@@ -363,28 +412,27 @@ def plot_plif_comparison(results_dir, out_dir):
             if key in df_idx.index:
                 matrix[ki, ci] = float(df_idx.loc[key, "frequency_pct"])
 
-    fig_h = max(5.0, len(top_keys) * 0.32)
+    fig_h = max(5.0, len(top_keys) * 0.42)
     fig, ax = plt.subplots(figsize=(5, fig_h))
     im = ax.imshow(matrix, aspect="auto", cmap="Blues", vmin=0, vmax=100)
     ax.set_xticks(range(len(CASES)))
-    ax.set_xticklabels([_short_label(c) for c in CASES], rotation=25, ha="right", fontsize=6)
+    ax.set_xticklabels([_short_label(c) for c in CASES], rotation=25, ha="right", fontsize=7)
     ax.set_yticks(range(len(top_keys)))
-    ax.set_yticklabels(top_keys, fontsize=5)
+    ax.set_yticklabels(top_keys, fontsize=7)
     for ci in range(len(CASES)):
         for ki in range(len(top_keys)):
             val = matrix[ki, ci]
             if val >= 5:
-                ax.text(ci, ki, f"{val:.0f}", ha="center", va="center",
-                        fontsize=5, color="black" if val < 60 else "white")
+                ax.text(ci, ki, f"{val:.0f}%", ha="center", va="center",
+                        fontsize=7, color="black" if val < 60 else "white")
     cbar = plt.colorbar(im, ax=ax, fraction=0.03, pad=0.04)
     cbar.set_label("Frequency (%)", fontsize=7)
-    ax.set_title("PLIF interaction frequencies — top 25 across all cases", fontsize=8)
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "plif_comparison"))
-    print("  plif_comparison.png")
+    print("  plif_comparison.pdf")
 
 
-# ── 10. Contact maps (4-panel side by side) ───────────────────────────────────
+# ── 10. Contact maps — one figure per case ───────────────────────────────────
 def plot_contacts_grid(results_dir, out_dir):
     dfs = {}
     for case in CASES:
@@ -397,17 +445,17 @@ def plot_contacts_grid(results_dir, out_dir):
     if not dfs:
         return
 
-    # Union residue set
+    # Union residue set shared across all cases for consistent axis labelling
     all_resids = sorted(
         set().union(*[set(df.index.tolist()) for df in dfs.values()]),
         key=lambda x: int(x) if x.isdigit() else x,
     )
     n = len(all_resids)
     idx_map = {r: i for i, r in enumerate(all_resids)}
+    tick_step = max(1, n // 6)
 
-    fig, axes = plt.subplots(1, 4, figsize=(12, 3.2), sharey=True)
-    im = None
-    for ax, case in zip(axes, CASES):
+    for case in CASES:
+        fig, ax = plt.subplots(figsize=(4.5, 4.0))
         mat = np.zeros((n, n))
         if case in dfs:
             df = dfs[case]
@@ -419,21 +467,18 @@ def plot_contacts_grid(results_dir, out_dir):
                         continue
                     mat[idx_map[ri], idx_map[ci]] = float(df.loc[ri, ci])
         im = ax.imshow(mat, cmap="hot_r", vmin=0, vmax=1, aspect="auto")
-        ax.set_title(_short_label(case), fontsize=6)
-        tick_step = max(1, n // 6)
+        ax.set_title(_short_label(case), fontsize=8)
         ax.set_xticks(range(0, n, tick_step))
-        ax.set_xticklabels(all_resids[::tick_step], rotation=90, fontsize=5)
-        if ax is axes[0]:
-            ax.set_yticks(range(0, n, tick_step))
-            ax.set_yticklabels(all_resids[::tick_step], fontsize=5)
-            ax.set_ylabel("Residue")
-    if im is not None:
-        cbar = plt.colorbar(im, ax=axes[-1], fraction=0.05, pad=0.04)
+        ax.set_xticklabels(all_resids[::tick_step], rotation=90, fontsize=7)
+        ax.set_yticks(range(0, n, tick_step))
+        ax.set_yticklabels(all_resids[::tick_step], fontsize=7)
+        ax.set_xlabel("Residue", fontsize=8)
+        ax.set_ylabel("Residue", fontsize=8)
+        cbar = plt.colorbar(im, ax=ax, fraction=0.05, pad=0.04)
         cbar.set_label("Contact frequency", fontsize=7)
-    fig.suptitle("Pocket contact maps — all 4 cases", fontsize=8)
-    fig.tight_layout()
-    save_pub_figure(fig, str(out_dir / "contact_maps_4case"))
-    print("  contact_maps_4case.png")
+        fig.tight_layout()
+        save_pub_figure(fig, str(out_dir / f"contact_map_{case}"))
+        print(f"  contact_map_{case}.pdf")
 
 
 # ── 11. Per-residue decomposition ─────────────────────────────────────────────
@@ -453,11 +498,34 @@ def plot_decomp_comparison(results_dir, out_dir):
     if not dfs:
         return
 
-    all_resids = sorted(set().union(*[set(df.index.tolist()) for df in dfs.values()]))
+    all_resids_full = sorted(set().union(*[set(df.index.tolist()) for df in dfs.values()]))
+
+    # Filter to residues with |ΔG| > 0.75 kcal/mol in at least one case (below kT ≈ noise)
+    DECOMP_THRESHOLD = 0.75
+    significant = [
+        r for r in all_resids_full
+        if any(
+            r in dfs[c].index and abs(float(dfs[c].loc[r, "mean_dG_kcal_mol"])) > DECOMP_THRESHOLD
+            for c in CASES if c in dfs
+        )
+    ]
+    if not significant:
+        significant = all_resids_full
+
+    # Sort by inter-case spread — most discriminating residues leftmost
+    def _spread(r):
+        vals = [
+            float(dfs[c].loc[r, "mean_dG_kcal_mol"])
+            for c in CASES if c in dfs and r in dfs[c].index
+        ]
+        return max(vals) - min(vals) if len(vals) > 1 else 0.0
+
+    all_resids = sorted(significant, key=_spread, reverse=True)
+
     x = np.arange(len(all_resids))
     bar_width = 0.2
 
-    fig_w = max(8, len(all_resids) * 0.45)
+    fig_w = max(7, len(all_resids) * 0.6)
     fig, ax = plt.subplots(figsize=(fig_w, 4.0))
 
     for i, case in enumerate(CASES):
@@ -476,15 +544,14 @@ def plot_decomp_comparison(results_dir, out_dir):
 
     ax.set_xticks(x)
     xlabels = [f"{rid}\n{resname_map.get(rid, '')}" for rid in all_resids]
-    ax.set_xticklabels(xlabels, fontsize=5)
+    ax.set_xticklabels(xlabels, fontsize=8, rotation=45, ha="right")
     ax.set_ylabel("ΔG decomp (kcal/mol)")
     ax.axhline(0, color="black", linewidth=0.5)
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    ax.legend(fontsize=6, loc="lower right")
-    ax.set_title("Per-residue decomposition — all 4 cases", fontsize=8)
+    ax.legend(fontsize=7, loc="lower right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "decomp_comparison"))
-    print("  decomp_comparison.png")
+    print("  decomp_comparison.pdf")
 
 
 # ── 12. Interaction entropy bar ───────────────────────────────────────────────
@@ -509,25 +576,24 @@ def plot_entropy_bar(results_dir, out_dir):
     x = np.arange(len(rows))
     bar_width = 0.25
     specs = [
-        ("mean_dG_mmgbsa", "MM-GBSA ΔG",  "#4393C3"),
-        ("neg_TdS_IE",     "−TΔS (IE)",    "#D6604D"),
-        ("dG_corrected",   "ΔG corrected", "#74C476"),
+        ("mean_dG_mmgbsa", "MM-GBSA ΔG",  "#4393C3", ''),
+        ("neg_TdS_IE",     "−TΔS (IE)",    "#D6604D", '///'),
+        ("dG_corrected",   "ΔG corrected", "#74C476", 'xxx'),
     ]
-    for i, (col, lbl, clr) in enumerate(specs):
+    for i, (col, lbl, clr, hatch) in enumerate(specs):
         vals = [float(row[col]) if col in row.index else 0.0 for _, row in rows]
         ax.bar(x + (i - 1) * bar_width, vals, bar_width,
-               label=lbl, color=clr, edgecolor="black", linewidth=0.4)
+               label=lbl, color=clr, hatch=hatch, edgecolor="black", linewidth=0.4)
 
     ax.set_xticks(x)
     ax.set_xticklabels([CASE_META[c]["label"].split(":")[0] for c, _ in rows])
     ax.set_ylabel("Energy (kcal/mol)")
     ax.axhline(0, color="black", linewidth=0.5)
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    ax.legend(fontsize=6)
-    ax.set_title("Binding free energy components — all 4 cases", fontsize=8)
+    ax.legend(fontsize=7)
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "entropy_bar"))
-    print("  entropy_bar.png")
+    print("  entropy_bar.pdf")
 
 
 # ── 13. PCA cumulative explained variance ────────────────────────────────────
@@ -553,15 +619,16 @@ def plot_pca_variance(results_dir, out_dir):
         ax.axhline(80, color="gray", linestyle=":", linewidth=0.7, alpha=0.7, label="80%")
         ax.set_xlabel("PC index")
         ax.set_ylabel("Cumulative explained variance (%)")
-        ax.set_title(f"PCA — {scope}", fontsize=8)
+        panel_label = "A" if scope == "global" else "B"
+        ax.set_title(f"({panel_label}) PCA — {scope}", fontsize=8)
         ax.grid(True, alpha=0.3, linestyle="--")
         ax.set_ylim(0, 105)
     if not any_data:
         plt.close(fig); return
-    axes[0].legend(fontsize=6, loc="lower right")
+    axes[0].legend(fontsize=7, loc="lower right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "pca_explained_variance"))
-    print("  pca_explained_variance.png")
+    print("  pca_explained_variance.pdf")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -593,6 +660,7 @@ def main():
     plot_backbone_rmsd(results_dir, out_dir)
     plot_ligand_rmsd(results_dir, out_dir)
     plot_rmsf(results_dir, out_dir)
+    plot_rmsf_pocket(results_dir, out_dir)
     plot_mmgbsa_timeseries(results_dir, out_dir)
     plot_mmgbsa_bar(results_dir, out_dir)
     plot_pocket_volume_timeseries(results_dir, out_dir)
@@ -605,7 +673,7 @@ def main():
     plot_pca_variance(results_dir, out_dir)
 
     print()
-    print(f"Done. {len(list(out_dir.glob('*.png')))} PNGs in {out_dir}")
+    print(f"Done. {len(list(out_dir.glob('*.pdf')))} PDFs in {out_dir}")
 
 
 if __name__ == "__main__":

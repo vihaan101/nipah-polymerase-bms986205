@@ -19,6 +19,7 @@ scripts/azure/.infra_env
 
 # Local manuscript/report drafts
 reports/
+Journals/
 
 # Runtime logs can contain expanded shell commands or environment-derived paths
 *.log
