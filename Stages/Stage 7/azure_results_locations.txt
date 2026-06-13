@@ -1,9 +1,9 @@
 # Stage 7 MD Simulation Results - Azure Files Locations
 # Campaign: 0-10ns Direct (Stage 7)
-# Storage Account: biomniinfra73722
-# File Share: biomni-results
+# Storage Account: <azure-storage-account>
+# File Share: <azure-file-share>
 
-Root Results Path: //biomniinfra73722.file.core.windows.net/biomni-results/stage7_10ns_direct/results/
+Root Results Path: //<azure-storage-account>.file.core.windows.net/<azure-file-share>/stage7_10ns_direct/results/
 
 Replicate Locations (each contains production.dcd, production.log, and production_final.pdb):
 
@@ -35,7 +35,7 @@ Case D (BMS-986205 x W730A Mutant):
 - D_BMS_MUT/replicate_4
 - D_BMS_MUT/replicate_5
 
-Eval Results Path: //biomniinfra73722.file.core.windows.net/biomni-results/
+Eval Results Path: //<azure-storage-account>.file.core.windows.net/<azure-file-share>/
 Eval Run ID: h04262331
 
 Case A (ERDRP-0519 x Wild-Type):
@@ -54,6 +54,6 @@ Recovery Run ID: r0427e (fixes: RMSF all cases, contacts B/C/D, PLIF D_BMS_MUT)
 - stage7_recovery_r0427e/  (sentinel + log)
 
 Golden Image (stage7eval conda env: OpenMM, MDAnalysis, ProLIF 2.1.0):
-- /subscriptions/6b335653-19be-4cb8-901f-3f681bd5903f/resourceGroups/biomni-infra/providers/Microsoft.Compute/images/biomni-gpu-golden-stage7eval
-- Image name: biomni-gpu-golden-stage7eval  (RG: biomni-infra)
+- /subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Compute/images/<image-name>
+- Image name: <image-name>  (RG: <resource-group>)
 - Captured: 2026-04-27 from recovery-cpu-r0427c (Standard_D16s_v3, Ubuntu 22.04 Gen2)

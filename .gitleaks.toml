@@ -1,0 +1,31 @@
+title = "nipahv-rdrp-md secret scan"
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS access key"
+regex = '''(?:A3T[A-Z0-9]|AKIA|ASIA)[A-Z0-9]{16}'''
+tags = ["key", "aws"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API key"
+regex = '''sk-[A-Za-z0-9_-]{20,}'''
+tags = ["key", "openai"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub personal access token"
+regex = '''(?:ghp|gho|ghu|ghs|ghr|github_pat)_[A-Za-z0-9_]{20,}'''
+tags = ["key", "github"]
+
+[[rules]]
+id = "azure-storage-account-key"
+description = "Azure storage account key or connection string"
+regex = '''(?i)(AccountKey=|DefaultEndpointsProtocol=|SharedAccessSignature=)[^\\s'"]+'''
+tags = ["key", "azure"]
+
+[[rules]]
+id = "private-key"
+description = "Private key material"
+regex = '''-----BEGIN (?:RSA |OPENSSH |DSA |EC |)PRIVATE KEY-----'''
+tags = ["key", "private"]

@@ -3,7 +3,7 @@
 # Runs on the Azure spot H100 VM as azureuser.
 # Injected env vars (set by bootstrap): MOUNT_POINT STORAGE_ACCT STORAGE_KEY SHARE_NAME
 #   SCRIPTS_SHARE SHARE_DIR_BASELINE STAGE7_TARGET_CASE STAGE7_EVAL_SHARE_DIR
-set -euxo pipefail
+set -euo pipefail
 
 cd /home/azureuser
 export HOME=/home/azureuser

@@ -1,10 +1,13 @@
 cff-version: 1.2.0
-message: "If you use this workflow, please cite it using this metadata."
+message: "If you use this workflow, please cite the Zenodo workflow record using this metadata."
 title: "Nipah RdRp Inhibitor Resistance MD Workflow"
 authors:
-  - name: "vihaan101"
+  - family-names: "Agrawal"
+    given-names: "Vihaan"
 license: "MIT"
 repository-code: "https://github.com/vihaan101/nipah-rdrp-inhibitor-resistance-md"
+doi: "10.5281/zenodo.20591160"
+url: "https://doi.org/10.5281/zenodo.20591160"
 abstract: "Reproducible staged docking and molecular dynamics workflow for a Nipah virus RdRp inhibitor-resistance study."
 keywords:
   - "Nipah virus"

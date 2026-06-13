@@ -3,10 +3,10 @@
   "drug": "BMS-986205",
   "receptor": "WT",
   "label": "Success",
-  "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/results/verification/BMS-986205_best_pose.pdbqt",
-  "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/system.xml",
-  "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/topology.pdb",
-  "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.chk",
-  "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.pdb",
-  "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready_state.xml"
+  "pose_source": "<azure-workspace>/results/verification/BMS-986205_best_pose.pdbqt",
+  "system_xml": "<azure-workspace>/Stages/Stage 6/results/C_BMS_WT/system.xml",
+  "topology_pdb": "<azure-workspace>/Stages/Stage 6/results/C_BMS_WT/topology.pdb",
+  "equilibrated_checkpoint": "<azure-workspace>/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.chk",
+  "equilibrated_pdb": "<azure-workspace>/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.pdb",
+  "equilibrated_state_xml": "<azure-workspace>/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready_state.xml"
 }

@@ -1,6 +1,6 @@
 {
   "metric_name": "mmgbsa",
   "case_summaries": {
-    "A_ERDRP_WT": "/home/azureuser/workspace/Stages/Stage 7/mmgbsa_10ns_direct/A_ERDRP_WT_mmgbsa_summary.json"
+    "A_ERDRP_WT": "<azure-workspace>/Stages/Stage 7/mmgbsa_10ns_direct/A_ERDRP_WT_mmgbsa_summary.json"
   }
 }

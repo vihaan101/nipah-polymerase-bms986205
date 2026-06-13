@@ -23,7 +23,7 @@ from rdkit import Chem
 from rdkit.Chem import rdchem, AllChem
 from rdkit.Geometry import Point3D
 
-ADFR_ROOT = Path("/Users/vihaanagrawal/ADFRsuite-1.0")
+ADFR_ROOT = Path(os.environ.get("ADFR_ROOT", "~/ADFRsuite-1.0")).expanduser()
 ADFR_PYTHON = ADFR_ROOT / "bin" / "python"
 ADFR_SCRIPT = ADFR_ROOT / "CCSBpckgs" / "AutoDockTools" / "Utilities24" / "prepare_receptor4.py"
 

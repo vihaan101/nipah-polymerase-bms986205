@@ -1,6 +1,6 @@
 {
   "metric_name": "hbonds",
   "case_summaries": {
-    "A_ERDRP_WT": "/home/azureuser/workspace/Stages/Stage 7/hbond_10ns_direct/A_ERDRP_WT_hbonds_summary.json"
+    "A_ERDRP_WT": "<azure-workspace>/Stages/Stage 7/hbond_10ns_direct/A_ERDRP_WT_hbonds_summary.json"
   }
 }

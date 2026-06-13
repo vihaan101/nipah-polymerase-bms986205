@@ -8,32 +8,32 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
-**/.pytest_cache/
-.mypy_cache/
-.ruff_cache/
 
-# Environments and local configuration
-.venv/
-venv/
-env/
-*.env
+# Azure credentials — NEVER commit
+scripts/azure/.infra_env
 **/.infra_env
+*.env
 
-# Local/editor state
+# Local security/audit artifacts
+.gstack/
+
+# Local manuscript/report drafts
+reports/
+
+# Runtime logs can contain expanded shell commands or environment-derived paths
+*.log
+worker_*.log
+eval_vm.log
+
+# Upload/automation scripts and state (not part of reproducible workflow)
+scripts/
+zenodo_draft_ids.json
+zenodo_upload_state.json
+
+# Vina binary (document version in README instead)
+**/vina
+
+# Editor
 .vscode/
 .idea/
 *.swp
-
-# Local binaries
-vina
-**/vina
-
-# Large/generated MD systems externalized from Git
-Stages/Stage 6/results/*/*.chk
-Stages/Stage 6/results/*/system.xml
-Stages/Stage 6/results/*/*_state.xml
-Stages/Stage 6/results/*/topology.pdb
-Stages/Stage 6/results/*/equilibrated_production_ready.pdb
-
-# Runtime scratch/checkpoint caches
-**/_checkpoints/

@@ -1,6 +1,6 @@
 {
   "metric_name": "pca",
   "case_summaries": {
-    "D_BMS_MUT": "/home/azureuser/workspace/Stages/Stage 7/pca_10ns_direct/D_BMS_MUT_pca_summary.json"
+    "D_BMS_MUT": "<azure-workspace>/Stages/Stage 7/pca_10ns_direct/D_BMS_MUT_pca_summary.json"
   }
 }

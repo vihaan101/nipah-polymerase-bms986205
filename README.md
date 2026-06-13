@@ -1,5 +1,10 @@
 # Nipah RdRp Inhibitor Resistance MD Workflow
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20591160.svg)](https://doi.org/10.5281/zenodo.20591160)
+[![DOI — ERDRP-0519 trajectories](https://zenodo.org/badge/DOI/10.5281/zenodo.20591172.svg)](https://doi.org/10.5281/zenodo.20591172)
+[![DOI — BMS-986205 trajectories](https://zenodo.org/badge/DOI/10.5281/zenodo.20591174.svg)](https://doi.org/10.5281/zenodo.20591174)
+[![DOI — Evaluation outputs](https://zenodo.org/badge/DOI/10.5281/zenodo.20593557.svg)](https://doi.org/10.5281/zenodo.20593557)
+
 Reproducible staged workflow for the Nipah virus RNA-dependent RNA polymerase
 (RdRp) inhibitor-resistance molecular modeling study.
 
@@ -53,7 +58,7 @@ Important root files:
 - `requirements.txt`: imported Python packages for the tracked scripts.
 - `ARTIFACTS.md`: artifact policy.
 - `artifacts_manifest.tsv`: externalized artifact paths, sizes, and checksums.
-- `CITATION.cff`: citation metadata. No DOI is claimed yet.
+- `CITATION.cff`: citation metadata for the Zenodo workflow record.
 - `LICENSE`: MIT license for code.
 
 ## What Is Tracked vs Externalized
@@ -76,9 +81,11 @@ Externalized from Git:
   - `topology.pdb`
   - `equilibrated_production_ready.pdb`
 
-These files are listed in `artifacts_manifest.tsv`. Before claiming a fully
-archived release, upload those artifacts to Zenodo, GitHub Releases, institutional
-storage, or another persistent archive and update `ARTIFACTS.md` with the URL/DOI.
+These files are listed in `artifacts_manifest.tsv`. The citable workflow record
+is archived at Zenodo DOI
+[`10.5281/zenodo.20591160`](https://doi.org/10.5281/zenodo.20591160).
+Large trajectory and evaluation artifacts are maintained in separate Zenodo
+records described in the manuscript data-availability statement.
 
 ## Hardware Requirements
 
@@ -585,7 +592,7 @@ python analyze_pca.py
 python analyze_pocket_volume.py
 python analyze_plif.py
 python make_comparison_figures.py
-python make_docking_affinity_comparison_figure.py
+python make_figure1_docking.py
 ```
 
 Tracked snapshot outputs are under:
@@ -658,15 +665,17 @@ not raw binary trajectory bytes.
   `--vina-path`.
 - Stage 7 production requires a GPU and refuses CPU execution.
 - Some reruns depend on network access, especially the Stage 1 RCSB download.
-- The current repo does not yet include a DOI-backed archive for externalized Stage
-  6 artifacts.
+- Large trajectory and evaluation artifacts are externalized in separate Zenodo
+  records from the code/workflow DOI.
 - Conda environment solving is platform-sensitive. Linux + conda-forge is the
   recommended baseline for full reproduction.
 
 ## Citation
 
-Use `CITATION.cff` for citation metadata. No DOI is claimed until a GitHub release
-is archived through Zenodo or an equivalent persistent archive.
+Use `CITATION.cff` for citation metadata. The primary citable workflow record is:
+
+Agrawal V. *Nipah RdRp Inhibitor Resistance MD Workflow*. Zenodo. 2026.
+doi:[10.5281/zenodo.20591160](https://doi.org/10.5281/zenodo.20591160).
 
 ## License
 

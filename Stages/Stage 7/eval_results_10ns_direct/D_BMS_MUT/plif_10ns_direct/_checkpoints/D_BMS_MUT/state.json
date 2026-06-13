@@ -1,0 +1,9 @@
+{
+  "artifact_frame_count": 0,
+  "case_id": "D_BMS_MUT",
+  "checkpoint_every_frames": 20,
+  "clean_frames_total": 250,
+  "mode": "prolif",
+  "next_clean_index": 250,
+  "stride": 10
+}

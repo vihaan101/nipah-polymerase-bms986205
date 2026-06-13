@@ -1,6 +1,6 @@
 {
   "metric_name": "hbonds",
   "case_summaries": {
-    "C_BMS_WT": "/home/azureuser/workspace/Stages/Stage 7/hbond_10ns_direct/C_BMS_WT_hbonds_summary.json"
+    "C_BMS_WT": "<azure-workspace>/Stages/Stage 7/hbond_10ns_direct/C_BMS_WT_hbonds_summary.json"
   }
 }

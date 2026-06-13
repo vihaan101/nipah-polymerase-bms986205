@@ -1,6 +1,6 @@
 {
   "metric_name": "ligand_rmsd",
   "case_summaries": {
-    "A_ERDRP_WT": "/home/azureuser/workspace/Stages/Stage 7/rmsd_10ns_direct/A_ERDRP_WT_ligand_rmsd_summary.json"
+    "A_ERDRP_WT": "<azure-workspace>/Stages/Stage 7/rmsd_10ns_direct/A_ERDRP_WT_ligand_rmsd_summary.json"
   }
 }

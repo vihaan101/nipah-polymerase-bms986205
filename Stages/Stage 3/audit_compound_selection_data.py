@@ -25,7 +25,7 @@ ARTIFACTS = [
     "Stages/Stage 4/results/verification/ghost_clash_verdict.json",
     "Stages/Stage 4/results/verification/admet_results.csv",
     "Stages/Stage 5/results/stage5_verdict.json",
-    "Stages/Stage 7/eval_results_10ns_direct/comparison_figures/docking_affinity_summary.csv",
+    "Stages/Stage 5/results/focused_100_seed_summary.csv",
 ]
 
 

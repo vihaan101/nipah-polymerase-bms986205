@@ -3,10 +3,10 @@
   "drug": "ERDRP-0519",
   "receptor": "WT",
   "label": "Control",
-  "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 5/results/matrix/ERDRP_WT_seed_42.pdbqt",
-  "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/system.xml",
-  "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/topology.pdb",
-  "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.chk",
-  "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.pdb",
-  "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready_state.xml"
+  "pose_source": "<azure-workspace>/Stages/Stage 5/results/matrix/ERDRP_WT_seed_42.pdbqt",
+  "system_xml": "<azure-workspace>/Stages/Stage 6/results/A_ERDRP_WT/system.xml",
+  "topology_pdb": "<azure-workspace>/Stages/Stage 6/results/A_ERDRP_WT/topology.pdb",
+  "equilibrated_checkpoint": "<azure-workspace>/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.chk",
+  "equilibrated_pdb": "<azure-workspace>/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.pdb",
+  "equilibrated_state_xml": "<azure-workspace>/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready_state.xml"
 }

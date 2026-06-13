@@ -19,5 +19,8 @@ openmmforcefields
 openff-toolkit
 pdbfixer
 
+# Zenodo upload
+azure-storage-file-share
+
 # Tests
 pytest

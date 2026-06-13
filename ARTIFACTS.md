@@ -14,8 +14,14 @@ persistent archive or release asset.
 - SHA-256 checksum
 - reason for externalization
 
-Before a public reproducibility release, upload the listed artifacts to a persistent
-location such as Zenodo, institutional storage, or GitHub release assets, then add
-the download URL or DOI to this file and `CITATION.cff`.
+The workflow/code record is archived at Zenodo DOI
+[`10.5281/zenodo.20591160`](https://doi.org/10.5281/zenodo.20591160). Large
+trajectory and evaluation artifacts are maintained in separate Zenodo records:
+ERDRP-0519 trajectories at
+[`10.5281/zenodo.20591172`](https://doi.org/10.5281/zenodo.20591172),
+BMS-986205 trajectories at
+[`10.5281/zenodo.20591174`](https://doi.org/10.5281/zenodo.20591174), and
+evaluation outputs at
+[`10.5281/zenodo.20593557`](https://doi.org/10.5281/zenodo.20593557).
 
-Current external artifact location: `TBD`
+Current external artifact locations: Zenodo records listed above.

@@ -1,6 +1,6 @@
 {
   "metric_name": "ligand_rmsd",
   "case_summaries": {
-    "D_BMS_MUT": "/home/azureuser/workspace/Stages/Stage 7/rmsd_10ns_direct/D_BMS_MUT_ligand_rmsd_summary.json"
+    "D_BMS_MUT": "<azure-workspace>/Stages/Stage 7/rmsd_10ns_direct/D_BMS_MUT_ligand_rmsd_summary.json"
   }
 }

@@ -3,7 +3,7 @@
 # Launches 4 spot H100 VMs (one per case) in parallel, polls sentinels, verifies results.
 # Usage: ./run_full_eval_10ns_direct_azure.sh [EVAL_ID] [SHARE_DIR_BASELINE] [SKIP_UPLOAD] [CASE_FILTER]
 # CASE_FILTER: optional, restricts to a single case (e.g. A_ERDRP_WT) for smoke testing
-set -euxo pipefail
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 INFRA_ENV="${SCRIPT_DIR}/../../../scripts/azure/.infra_env"
