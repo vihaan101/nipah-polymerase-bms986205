@@ -1,0 +1,89 @@
+{
+  "metric_name": "pocket_volume",
+  "case_id": "B_ERDRP_MUT",
+  "summary": {
+    "n": 250,
+    "mean": 4422.801255064526,
+    "std": 65.98104380176103,
+    "median": 4423.642792851176,
+    "min": 4250.765547517258,
+    "max": 4697.9406296419575,
+    "final": 4452.767468801436,
+    "time_start": 0.004000000011925623,
+    "time_end": 9.964000029706726
+  },
+  "derived_metrics": {
+    "split_window": {
+      "first_mean": 4430.85076032424,
+      "second_mean": 4414.7517498048155,
+      "mean_shift": -16.099010519424155,
+      "pooled_std": 65.48819440360056
+    },
+    "late_window": {
+      "n_points": 62,
+      "mean": 4445.655651112492,
+      "std": 54.01940981320877,
+      "slope_per_ns": -42.938260054980596,
+      "range": 262.247657930674
+    },
+    "n_qhull_errors": 0,
+    "n_nonpositive_values": 0,
+    "pocket_resids": [
+      544,
+      582,
+      584,
+      587,
+      588,
+      591,
+      660,
+      661,
+      664,
+      667,
+      668,
+      671,
+      675,
+      691,
+      692,
+      693,
+      695,
+      697,
+      727,
+      731,
+      738
+    ]
+  },
+  "interpretation": [
+    {
+      "criterion_id": "pocket_volume_convergence",
+      "status": "descriptive",
+      "detail": "Pocket volume remains descriptive. Early/late distribution drift is reported as a heuristic convergence proxy, while nonpositive values remain QC-only concerns.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "split_window": {
+          "first_mean": 4430.85076032424,
+          "second_mean": 4414.7517498048155,
+          "mean_shift": -16.099010519424155,
+          "pooled_std": 65.48819440360056
+        },
+        "late_window": {
+          "n_points": 62,
+          "mean": 4445.655651112492,
+          "std": 54.01940981320877,
+          "slope_per_ns": -42.938260054980596,
+          "range": 262.247657930674
+        },
+        "n_qhull_errors": 0,
+        "positive_volume_qc": true
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [
+    "Positive volume is treated as a QC sanity check, not as a scientific success criterion."
+  ],
+  "limitations": [
+    "No reference holo/apo pocket volume distribution is available for calibration."
+  ]
+}

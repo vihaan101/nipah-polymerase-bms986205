@@ -1,0 +1,25 @@
+MODEL 1
+REMARK VINA RESULT:    -3.916      0.000      0.000
+REMARK INTER + INTRA:          -3.916
+REMARK INTER:                  -3.916
+REMARK INTRA:                   0.000
+REMARK UNBOUND:                 0.000
+REMARK SMILES O=c1n(Cl)c(=O)n(Cl)c(=O)n1Cl
+REMARK SMILES IDX 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12
+REMARK H PARENT
+ROOT
+ATOM      1  O   UNL     1     133.342 134.321 151.656  1.00  0.00    -0.244 OA
+ATOM      2  C   UNL     1     133.029 135.298 152.341  1.00  0.00     0.366 C 
+ATOM      3  N   UNL     1     131.807 135.394 152.996  1.00  0.00    -0.148 N 
+ATOM      4  Cl  UNL     1     130.692 134.055 152.820  1.00  0.00     0.027 Cl
+ATOM      5  C   UNL     1     131.399 136.466 153.780  1.00  0.00     0.366 C 
+ATOM      6  O   UNL     1     130.301 136.501 154.341  1.00  0.00    -0.244 OA
+ATOM      7  N   UNL     1     132.325 137.497 153.882  1.00  0.00    -0.148 N 
+ATOM      8  Cl  UNL     1     131.881 138.884 154.854  1.00  0.00     0.027 Cl
+ATOM      9  C   UNL     1     133.574 137.516 153.275  1.00  0.00     0.366 C 
+ATOM     10  O   UNL     1     134.360 138.459 153.399  1.00  0.00    -0.244 OA
+ATOM     11  N   UNL     1     133.871 136.389 152.518  1.00  0.00    -0.148 N 
+ATOM     12  Cl  UNL     1     135.429 136.342 151.722  1.00  0.00     0.027 Cl
+ENDROOT
+TORSDOF 0
+ENDMDL

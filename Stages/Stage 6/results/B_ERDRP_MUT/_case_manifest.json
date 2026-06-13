@@ -1,0 +1,12 @@
+{
+  "case_id": "B_ERDRP_MUT",
+  "drug": "ERDRP-0519",
+  "receptor": "W730A",
+  "label": "Failure",
+  "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 5/results/matrix/ERDRP_MUT_seed_42.pdbqt",
+  "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/system.xml",
+  "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/topology.pdb",
+  "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.chk",
+  "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.pdb",
+  "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready_state.xml"
+}

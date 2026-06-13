@@ -1,0 +1,59 @@
+# Stage 7 MD Simulation Results - Azure Files Locations
+# Campaign: 0-10ns Direct (Stage 7)
+# Storage Account: biomniinfra73722
+# File Share: biomni-results
+
+Root Results Path: //biomniinfra73722.file.core.windows.net/biomni-results/stage7_10ns_direct/results/
+
+Replicate Locations (each contains production.dcd, production.log, and production_final.pdb):
+
+Case A (ERDRP-0519 x Wild-Type):
+- A_ERDRP_WT/replicate_1
+- A_ERDRP_WT/replicate_2
+- A_ERDRP_WT/replicate_3
+- A_ERDRP_WT/replicate_4
+- A_ERDRP_WT/replicate_5
+
+Case B (ERDRP-0519 x W730A Mutant):
+- B_ERDRP_MUT/replicate_1
+- B_ERDRP_MUT/replicate_2
+- B_ERDRP_MUT/replicate_3
+- B_ERDRP_MUT/replicate_4
+- B_ERDRP_MUT/replicate_5
+
+Case C (BMS-986205 x Wild-Type):
+- C_BMS_WT/replicate_1
+- C_BMS_WT/replicate_2
+- C_BMS_WT/replicate_3
+- C_BMS_WT/replicate_4
+- C_BMS_WT/replicate_5
+
+Case D (BMS-986205 x W730A Mutant):
+- D_BMS_MUT/replicate_1
+- D_BMS_MUT/replicate_2
+- D_BMS_MUT/replicate_3
+- D_BMS_MUT/replicate_4
+- D_BMS_MUT/replicate_5
+
+Eval Results Path: //biomniinfra73722.file.core.windows.net/biomni-results/
+Eval Run ID: h04262331
+
+Case A (ERDRP-0519 x Wild-Type):
+- stage7_evals_10ns_direct_A_ERDRP_WT_h04262331/A_ERDRP_WT/
+
+Case B (ERDRP-0519 x W730A Mutant):
+- stage7_evals_10ns_direct_B_ERDRP_MUT_h04262331/B_ERDRP_MUT/
+
+Case C (BMS-986205 x Wild-Type):
+- stage7_evals_10ns_direct_C_BMS_WT_h04262331/C_BMS_WT/
+
+Case D (BMS-986205 x W730A Mutant):
+- stage7_evals_10ns_direct_D_BMS_MUT_h04262331/D_BMS_MUT/
+
+Recovery Run ID: r0427e (fixes: RMSF all cases, contacts B/C/D, PLIF D_BMS_MUT)
+- stage7_recovery_r0427e/  (sentinel + log)
+
+Golden Image (stage7eval conda env: OpenMM, MDAnalysis, ProLIF 2.1.0):
+- /subscriptions/6b335653-19be-4cb8-901f-3f681bd5903f/resourceGroups/biomni-infra/providers/Microsoft.Compute/images/biomni-gpu-golden-stage7eval
+- Image name: biomni-gpu-golden-stage7eval  (RG: biomni-infra)
+- Captured: 2026-04-27 from recovery-cpu-r0427c (Standard_D16s_v3, Ubuntu 22.04 Gen2)

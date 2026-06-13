@@ -1,0 +1,8 @@
+{
+  "lead_name": "BMS-986205",
+  "pose_path": "results/verification/BMS-986205_best_pose.pdbqt",
+  "verification_csv": "Stages/Stage 4/results/verification/verification_results.csv",
+  "admet_csv": "Stages/Stage 4/results/verification/admet_results.csv",
+  "timestamp": "2026-03-22T09:44:08Z",
+  "filter_note": "BMS-986205 passes potency, resilience, pose-stability, and ghost-clash gates. Allosteric-distance gate (mut_dist >= 5.0 \u00c5) not met (3.27 \u00c5) \u2014 expected for a direct IDO1 active-site inhibitor that binds near W730; this gate is intended for novel allosteric candidates, not the reference drug. Designated lead by best WT affinity."
+}

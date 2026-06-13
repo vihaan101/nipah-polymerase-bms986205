@@ -1,0 +1,22 @@
+{
+  "metric_name": "pca",
+  "case_id": "C_BMS_WT",
+  "summary": {
+    "pocket_residue_count": 20,
+    "global_pc1_pct": 31.13439348496376,
+    "pocket_pc1_pct": 34.918103065098094
+  },
+  "derived_metrics": {
+    "global": {
+      "pc1_pct": 31.13439348496376,
+      "pc1_3_pct": 50.992093541570824
+    },
+    "pocket": {
+      "pc1_pct": 34.918103065098094,
+      "pc1_3_pct": 59.673872524363695
+    }
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

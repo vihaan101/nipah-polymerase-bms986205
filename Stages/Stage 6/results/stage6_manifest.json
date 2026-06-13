@@ -1,0 +1,55 @@
+{
+  "stage": 6,
+  "raw_receptor_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 1/data/9KNZ_raw.pdb",
+  "cases": {
+    "A_ERDRP_WT": {
+      "case_id": "A_ERDRP_WT",
+      "drug": "ERDRP-0519",
+      "receptor": "WT",
+      "label": "Control",
+      "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 5/results/matrix/ERDRP_WT_seed_42.pdbqt",
+      "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/system.xml",
+      "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/topology.pdb",
+      "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.chk",
+      "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.pdb",
+      "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready_state.xml"
+    },
+    "B_ERDRP_MUT": {
+      "case_id": "B_ERDRP_MUT",
+      "drug": "ERDRP-0519",
+      "receptor": "W730A",
+      "label": "Failure",
+      "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 5/results/matrix/ERDRP_MUT_seed_42.pdbqt",
+      "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/system.xml",
+      "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/topology.pdb",
+      "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.chk",
+      "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.pdb",
+      "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready_state.xml"
+    },
+    "C_BMS_WT": {
+      "case_id": "C_BMS_WT",
+      "drug": "BMS-986205",
+      "receptor": "WT",
+      "label": "Success",
+      "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/results/verification/BMS-986205_best_pose.pdbqt",
+      "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/system.xml",
+      "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/topology.pdb",
+      "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.chk",
+      "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.pdb",
+      "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready_state.xml"
+    },
+    "D_BMS_MUT": {
+      "case_id": "D_BMS_MUT",
+      "drug": "BMS-986205",
+      "receptor": "W730A",
+      "label": "Resilience",
+      "pose_source": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 5/results/matrix/BMS_MUT_seed_42.pdbqt",
+      "system_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/D_BMS_MUT/system.xml",
+      "topology_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/D_BMS_MUT/topology.pdb",
+      "equilibrated_checkpoint": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready.chk",
+      "equilibrated_pdb": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready.pdb",
+      "equilibrated_state_xml": "/home/azureuser/biomni-workflow-2/vanshaj_workflow/Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready_state.xml"
+    }
+  },
+  "timestamp": "2026-03-27T08:16:43.467812+00:00Z"
+}

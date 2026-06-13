@@ -1,0 +1,6 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_summaries": {
+    "C_BMS_WT": "/home/azureuser/workspace/Stages/Stage 7/entropy_10ns_direct/C_BMS_WT_interaction_entropy_summary.json"
+  }
+}

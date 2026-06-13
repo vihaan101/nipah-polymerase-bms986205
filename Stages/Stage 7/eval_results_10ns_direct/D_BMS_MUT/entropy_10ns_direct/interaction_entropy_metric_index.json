@@ -1,0 +1,6 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_summaries": {
+    "D_BMS_MUT": "/home/azureuser/workspace/Stages/Stage 7/entropy_10ns_direct/D_BMS_MUT_interaction_entropy_summary.json"
+  }
+}

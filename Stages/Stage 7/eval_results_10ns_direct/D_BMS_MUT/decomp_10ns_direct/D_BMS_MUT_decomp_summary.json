@@ -1,0 +1,101 @@
+{
+  "metric_name": "decomp",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "n_residues": 31,
+    "n_frames": 100,
+    "total_sum_dG_kcal_mol": -36.762474456207244,
+    "mmgbsa_total_kcal_mol": -42.619181000000005
+  },
+  "derived_metrics": {
+    "decomposition_recovery": {
+      "absolute_discrepancy_kcal_mol": 5.856706543792761,
+      "relative_discrepancy": 0.1374195000085234
+    },
+    "mutation_site_hook": {
+      "resid": 591,
+      "resname": "ALA",
+      "mean_dG_kcal_mol": -1.1003325792389205,
+      "rank_by_favorability": 10
+    },
+    "top_residues": [
+      {
+        "resid": 544,
+        "resname": "ARG",
+        "mean_dg": -0.2699156853710488,
+        "std_dg": 0.20908438613813835
+      },
+      {
+        "resid": 584,
+        "resname": "LEU",
+        "mean_dg": -4.046686017490482,
+        "std_dg": 0.3783180524240191
+      },
+      {
+        "resid": 585,
+        "resname": "LYS",
+        "mean_dg": -0.08643431690865219,
+        "std_dg": 0.022410896075470334
+      },
+      {
+        "resid": 587,
+        "resname": "PHE",
+        "mean_dg": -4.205994544475986,
+        "std_dg": 0.4414127868918433
+      },
+      {
+        "resid": 588,
+        "resname": "CYS",
+        "mean_dg": -1.7345732767312976,
+        "std_dg": 0.24673501226685435
+      },
+      {
+        "resid": 591,
+        "resname": "ALA",
+        "mean_dg": -1.1003325792389205,
+        "std_dg": 0.19851654609556538
+      },
+      {
+        "resid": 592,
+        "resname": "ARG",
+        "mean_dg": -0.05810910634283353,
+        "std_dg": 0.025262874266089815
+      },
+      {
+        "resid": 595,
+        "resname": "SER",
+        "mean_dg": -0.46703126371248727,
+        "std_dg": 0.1650998262009958
+      },
+      {
+        "resid": 596,
+        "resname": "MET",
+        "mean_dg": -0.7062934470678149,
+        "std_dg": 0.1606596465586988
+      },
+      {
+        "resid": 659,
+        "resname": "ILE",
+        "mean_dg": -0.06229493905207849,
+        "std_dg": 0.04686064197857954
+      }
+    ]
+  },
+  "interpretation": [
+    {
+      "criterion_id": "decomp_recovery",
+      "status": "descriptive",
+      "detail": "Decomposition-total recovery is reported as an approximate internal-consistency check.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "absolute_discrepancy_kcal_mol": 5.856706543792761,
+        "relative_discrepancy": 0.1374195000085234
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [],
+  "limitations": []
+}

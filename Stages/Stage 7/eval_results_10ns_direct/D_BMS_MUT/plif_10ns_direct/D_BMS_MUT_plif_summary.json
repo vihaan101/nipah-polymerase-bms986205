@@ -1,0 +1,86 @@
+{
+  "metric_name": "plif",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "method": "prolif-2.1.0",
+    "n_frames": 1250,
+    "n_interaction_entries": 14
+  },
+  "derived_metrics": {
+    "top_interactions": [
+      {
+        "residue": "LEU584.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 17.599999999999998
+      },
+      {
+        "residue": "GLY692.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 16.400000000000002
+      },
+      {
+        "residue": "THR671.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 14.8
+      },
+      {
+        "residue": "LEU731.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 13.2
+      },
+      {
+        "residue": "GLN664.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 10.8
+      },
+      {
+        "residue": "ALA591.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 8.0
+      },
+      {
+        "residue": "GLU695.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 6.8
+      },
+      {
+        "residue": "CYS588.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 5.6000000000000005
+      },
+      {
+        "residue": "MET596.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 3.6
+      },
+      {
+        "residue": "PHE587.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.6
+      },
+      {
+        "residue": "GLN691.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      },
+      {
+        "residue": "HIS736.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      },
+      {
+        "residue": "GLU660.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.4
+      },
+      {
+        "residue": "ARG544.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.4
+      }
+    ]
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

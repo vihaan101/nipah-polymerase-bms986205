@@ -1,0 +1,16 @@
+# method=prolif-2.1.0
+residue,interaction_type,frequency_pct
+LEU584.A,VdWContact,17.60
+GLY692.A,VdWContact,16.40
+THR671.A,VdWContact,14.80
+LEU731.A,VdWContact,13.20
+GLN664.A,VdWContact,10.80
+ALA591.A,VdWContact,8.00
+GLU695.A,VdWContact,6.80
+CYS588.A,VdWContact,5.60
+MET596.A,VdWContact,3.60
+PHE587.A,VdWContact,1.60
+GLN691.A,VdWContact,0.80
+HIS736.A,VdWContact,0.80
+GLU660.A,VdWContact,0.40
+ARG544.A,VdWContact,0.40

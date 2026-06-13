@@ -1,0 +1,25 @@
+{
+  "cpu_per_job": 1,
+  "library": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 3/data/library_100_locked.csv",
+  "library_sha256": "170ebf27aaeb415c91a03f653be6fd9dd3086201961d8937e368f22d61e5c9d3",
+  "mode": "wt",
+  "mut_receptor": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 1/data/9KNZ_W730A.pdbqt",
+  "resume": true,
+  "seed": 42,
+  "vina_path": "/Users/vihaanagrawal/miniforge/envs/biomni_e1/bin/vina",
+  "vina_version": "AutoDock Vina v1.2.7",
+  "workers": 7,
+  "wt_pdb": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 1/data/9KNZ_clean.pdb",
+  "wt_receptor": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 1/data/9KNZ_clean.pdbqt",
+  "wt_threshold": -8.0,
+  "box": {
+    "center_x": 132.771,
+    "center_y": 137.769,
+    "center_z": 150.409,
+    "size_x": 22,
+    "size_y": 22,
+    "size_z": 22,
+    "exhaustiveness": 16,
+    "seed": 42
+  }
+}

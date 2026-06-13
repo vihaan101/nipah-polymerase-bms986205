@@ -1,0 +1,22 @@
+{
+  "metric_name": "pca",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "pocket_residue_count": 19,
+    "global_pc1_pct": 29.420422868512013,
+    "pocket_pc1_pct": 30.22455197795025
+  },
+  "derived_metrics": {
+    "global": {
+      "pc1_pct": 29.420422868512013,
+      "pc1_3_pct": 46.366749325535906
+    },
+    "pocket": {
+      "pc1_pct": 30.22455197795025,
+      "pc1_3_pct": 52.74829531202791
+    }
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

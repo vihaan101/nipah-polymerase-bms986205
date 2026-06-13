@@ -1,0 +1,13 @@
+{
+  "metric_name": "mmgbsa",
+  "case_id": "B_ERDRP_MUT",
+  "summary": {
+    "overall_mean": -45.544811252426236,
+    "overall_sem": 0.9247251657675586,
+    "replicates": 5
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

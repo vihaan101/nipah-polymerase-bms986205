@@ -1,0 +1,37 @@
+{
+  "bms_inclusion_mode": "clinical_hypothesis_override",
+  "bms_override_removed_natural_pick": "taminadenant",
+  "candidate_filters": {
+    "clogp": [
+      -1,
+      7
+    ],
+    "mw": [
+      200,
+      650
+    ],
+    "qc_incompatible": "0"
+  },
+  "erdrp_exclusion_statement": "ERDRP-0519 is retained only as an external comparator.",
+  "final_locked_row_count": 100,
+  "input_hashes": {
+    "drugs": "65792fa849712c28b7e042c8648f9adff67ea24d639a05a6f6a8ea8f8f3168ac",
+    "samples": "428a60f43754d802b8b0bd8cb5708e401739d406d54f14601a59f5579b65f133"
+  },
+  "input_paths": {
+    "drugs": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/data/lake/Broad_Repurposing_Hub.csv",
+    "samples": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/data/lake/Broad_Repurposing_Samples.csv"
+  },
+  "library_size": 100,
+  "python_version": "3.11.14",
+  "rdkit_version": "2025.09.3",
+  "row_counts": {
+    "candidate_pool_rows": 5239,
+    "deduped_rows": 6525,
+    "drug_rows": 6798,
+    "merged_rows": 20278,
+    "sample_rows": 20283,
+    "valid_structure_rows": 19783
+  },
+  "selection_seed": 42
+}

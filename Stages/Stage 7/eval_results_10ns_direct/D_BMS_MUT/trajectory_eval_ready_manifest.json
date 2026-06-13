@@ -1,0 +1,238 @@
+{
+  "campaign": "10ns_direct",
+  "generated_at": "2026-04-26T18:12:44.985596Z",
+  "source_root": "/mnt/biomni/stage7_10ns_direct/results",
+  "tier": "10ns_direct",
+  "cases": {
+    "D_BMS_MUT": {
+      "replicate_1": {
+        "status": "evaluation_ready",
+        "paths": {
+          "replicate_dir": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1",
+          "production_dcd": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/production.dcd",
+          "production_final_pdb": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/production_final.pdb",
+          "production_log": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/production.log",
+          "production_chk": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/production.chk",
+          "task_complete": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/TASK_COMPLETE",
+          "case_manifest": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_1/_case_manifest.json",
+          "stage6_topology": "/mnt/biomni/stage6/D_BMS_MUT/topology.pdb"
+        },
+        "checks": {
+          "production.dcd_present": "pass",
+          "production.dcd_non_empty": "pass",
+          "production.log_present": "pass",
+          "production.log_non_empty": "pass",
+          "production_final.pdb_present": "pass",
+          "production_final.pdb_non_empty": "pass",
+          "production.chk_present": "pass",
+          "TASK_COMPLETE_present": "pass",
+          "_case_manifest.json_present": "pass",
+          "dcd_readable": "pass",
+          "topology_load": "pass",
+          "sequential_scan": "pass",
+          "frame_count": "pass",
+          "time_span": "pass"
+        },
+        "metrics": {
+          "expected_frames": 2500,
+          "expected_first_time_ps": 4.0,
+          "expected_last_time_ps": 10000.0,
+          "dcd_size_bytes": 4873550276,
+          "production_final_pdb_size_bytes": 13159499,
+          "production_log_size_bytes": 399205,
+          "n_frames": 2500,
+          "first_time_ps": 4.000000011925623,
+          "last_time_ps": 10000.000029814059,
+          "frames_scanned": 2
+        },
+        "warnings": [],
+        "failure_reasons": []
+      },
+      "replicate_2": {
+        "status": "evaluation_ready",
+        "paths": {
+          "replicate_dir": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2",
+          "production_dcd": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/production.dcd",
+          "production_final_pdb": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/production_final.pdb",
+          "production_log": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/production.log",
+          "production_chk": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/production.chk",
+          "task_complete": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/TASK_COMPLETE",
+          "case_manifest": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_2/_case_manifest.json",
+          "stage6_topology": "/mnt/biomni/stage6/D_BMS_MUT/topology.pdb"
+        },
+        "checks": {
+          "production.dcd_present": "pass",
+          "production.dcd_non_empty": "pass",
+          "production.log_present": "pass",
+          "production.log_non_empty": "pass",
+          "production_final.pdb_present": "pass",
+          "production_final.pdb_non_empty": "pass",
+          "production.chk_present": "pass",
+          "TASK_COMPLETE_present": "pass",
+          "_case_manifest.json_present": "pass",
+          "dcd_readable": "pass",
+          "topology_load": "pass",
+          "sequential_scan": "pass",
+          "frame_count": "pass",
+          "time_span": "pass"
+        },
+        "metrics": {
+          "expected_frames": 2500,
+          "expected_first_time_ps": 4.0,
+          "expected_last_time_ps": 10000.0,
+          "dcd_size_bytes": 4873550276,
+          "production_final_pdb_size_bytes": 13159499,
+          "production_log_size_bytes": 399182,
+          "n_frames": 2500,
+          "first_time_ps": 4.000000011925623,
+          "last_time_ps": 10000.000029814059,
+          "frames_scanned": 2
+        },
+        "warnings": [],
+        "failure_reasons": []
+      },
+      "replicate_3": {
+        "status": "evaluation_ready",
+        "paths": {
+          "replicate_dir": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3",
+          "production_dcd": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/production.dcd",
+          "production_final_pdb": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/production_final.pdb",
+          "production_log": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/production.log",
+          "production_chk": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/production.chk",
+          "task_complete": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/TASK_COMPLETE",
+          "case_manifest": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_3/_case_manifest.json",
+          "stage6_topology": "/mnt/biomni/stage6/D_BMS_MUT/topology.pdb"
+        },
+        "checks": {
+          "production.dcd_present": "pass",
+          "production.dcd_non_empty": "pass",
+          "production.log_present": "pass",
+          "production.log_non_empty": "pass",
+          "production_final.pdb_present": "pass",
+          "production_final.pdb_non_empty": "pass",
+          "production.chk_present": "pass",
+          "TASK_COMPLETE_present": "pass",
+          "_case_manifest.json_present": "pass",
+          "dcd_readable": "pass",
+          "topology_load": "pass",
+          "sequential_scan": "pass",
+          "frame_count": "pass",
+          "time_span": "pass"
+        },
+        "metrics": {
+          "expected_frames": 2500,
+          "expected_first_time_ps": 4.0,
+          "expected_last_time_ps": 10000.0,
+          "dcd_size_bytes": 4873550276,
+          "production_final_pdb_size_bytes": 13159499,
+          "production_log_size_bytes": 399124,
+          "n_frames": 2500,
+          "first_time_ps": 4.000000011925623,
+          "last_time_ps": 10000.000029814059,
+          "frames_scanned": 2
+        },
+        "warnings": [],
+        "failure_reasons": []
+      },
+      "replicate_4": {
+        "status": "evaluation_ready",
+        "paths": {
+          "replicate_dir": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4",
+          "production_dcd": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/production.dcd",
+          "production_final_pdb": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/production_final.pdb",
+          "production_log": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/production.log",
+          "production_chk": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/production.chk",
+          "task_complete": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/TASK_COMPLETE",
+          "case_manifest": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_4/_case_manifest.json",
+          "stage6_topology": "/mnt/biomni/stage6/D_BMS_MUT/topology.pdb"
+        },
+        "checks": {
+          "production.dcd_present": "pass",
+          "production.dcd_non_empty": "pass",
+          "production.log_present": "pass",
+          "production.log_non_empty": "pass",
+          "production_final.pdb_present": "pass",
+          "production_final.pdb_non_empty": "pass",
+          "production.chk_present": "pass",
+          "TASK_COMPLETE_present": "pass",
+          "_case_manifest.json_present": "pass",
+          "dcd_readable": "pass",
+          "topology_load": "pass",
+          "sequential_scan": "pass",
+          "frame_count": "pass",
+          "time_span": "pass"
+        },
+        "metrics": {
+          "expected_frames": 2500,
+          "expected_first_time_ps": 4.0,
+          "expected_last_time_ps": 10000.0,
+          "dcd_size_bytes": 4873550276,
+          "production_final_pdb_size_bytes": 13159499,
+          "production_log_size_bytes": 399241,
+          "n_frames": 2500,
+          "first_time_ps": 4.000000011925623,
+          "last_time_ps": 10000.000029814059,
+          "frames_scanned": 2
+        },
+        "warnings": [],
+        "failure_reasons": []
+      },
+      "replicate_5": {
+        "status": "evaluation_ready",
+        "paths": {
+          "replicate_dir": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5",
+          "production_dcd": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/production.dcd",
+          "production_final_pdb": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/production_final.pdb",
+          "production_log": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/production.log",
+          "production_chk": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/production.chk",
+          "task_complete": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/TASK_COMPLETE",
+          "case_manifest": "/mnt/biomni/stage7_10ns_direct/results/D_BMS_MUT/replicate_5/_case_manifest.json",
+          "stage6_topology": "/mnt/biomni/stage6/D_BMS_MUT/topology.pdb"
+        },
+        "checks": {
+          "production.dcd_present": "pass",
+          "production.dcd_non_empty": "pass",
+          "production.log_present": "pass",
+          "production.log_non_empty": "pass",
+          "production_final.pdb_present": "pass",
+          "production_final.pdb_non_empty": "pass",
+          "production.chk_present": "pass",
+          "TASK_COMPLETE_present": "pass",
+          "_case_manifest.json_present": "pass",
+          "dcd_readable": "pass",
+          "topology_load": "pass",
+          "sequential_scan": "pass",
+          "frame_count": "pass",
+          "time_span": "pass"
+        },
+        "metrics": {
+          "expected_frames": 2500,
+          "expected_first_time_ps": 4.0,
+          "expected_last_time_ps": 10000.0,
+          "dcd_size_bytes": 4873550276,
+          "production_final_pdb_size_bytes": 13159499,
+          "production_log_size_bytes": 399308,
+          "n_frames": 2500,
+          "first_time_ps": 4.000000011925623,
+          "last_time_ps": 10000.000029814059,
+          "frames_scanned": 2
+        },
+        "warnings": [],
+        "failure_reasons": []
+      }
+    }
+  },
+  "evaluation_ready_replicates": {
+    "D_BMS_MUT": [
+      "replicate_1",
+      "replicate_2",
+      "replicate_3",
+      "replicate_4",
+      "replicate_5"
+    ]
+  },
+  "summary": {
+    "evaluation_ready": 5,
+    "not_ready": 0
+  }
+}

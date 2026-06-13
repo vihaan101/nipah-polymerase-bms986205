@@ -1,0 +1,91 @@
+{
+  "metric_name": "plif",
+  "case_id": "A_ERDRP_WT",
+  "summary": {
+    "method": "prolif-2.1.0",
+    "n_frames": 1250,
+    "n_interaction_entries": 16
+  },
+  "derived_metrics": {
+    "top_interactions": [
+      {
+        "residue": "GLN691.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 34.4
+      },
+      {
+        "residue": "GLU660.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 25.2
+      },
+      {
+        "residue": "GLU660.A",
+        "interaction_type": "HBDonor",
+        "frequency_pct": 13.2
+      },
+      {
+        "residue": "LEU584.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 10.0
+      },
+      {
+        "residue": "ILE697.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 8.799999999999999
+      },
+      {
+        "residue": "GLU695.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 7.6
+      },
+      {
+        "residue": "CYS588.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 2.8000000000000003
+      },
+      {
+        "residue": "THR671.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 2.8000000000000003
+      },
+      {
+        "residue": "GLN664.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 2.0
+      },
+      {
+        "residue": "THR582.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.6
+      },
+      {
+        "residue": "LYS535.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.2
+      },
+      {
+        "residue": "LEU727.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      },
+      {
+        "residue": "PHE587.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      },
+      {
+        "residue": "ARG544.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      },
+      {
+        "residue": "ILE689.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 0.8
+      }
+    ]
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

@@ -1,0 +1,7 @@
+{
+  "compound": "BMS-986205",
+  "ghost_clash_dist": 2.1490650064474797,
+  "ghost_clash": true,
+  "threshold": 2.5,
+  "ghost_atom_count": 9
+}

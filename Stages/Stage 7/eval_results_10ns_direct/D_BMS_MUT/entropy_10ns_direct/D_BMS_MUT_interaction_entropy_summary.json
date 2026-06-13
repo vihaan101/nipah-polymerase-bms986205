@@ -1,0 +1,15 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "mean_dG_mmgbsa": -42.61918060000001,
+    "std_dG": 3.099097607843382,
+    "neg_TdS_IE": 6.81669505579455,
+    "dG_corrected": -35.80248554420545,
+    "n_frames": 100
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

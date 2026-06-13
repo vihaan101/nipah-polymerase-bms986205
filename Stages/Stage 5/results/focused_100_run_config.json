@@ -1,0 +1,26 @@
+{
+  "box": {
+    "center_x": 132.771,
+    "center_y": 137.769,
+    "center_z": 150.409,
+    "exhaustiveness": 16,
+    "seed": 42,
+    "size_x": 22,
+    "size_y": 22,
+    "size_z": 22
+  },
+  "candidate_count": 7,
+  "cpu_per_job": 1,
+  "matrix_csv": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 5/results/focused_100_seed_matrix.csv",
+  "out_dir": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 5/results/focused_100_pdbqt",
+  "seeds": [
+    42,
+    101,
+    2023,
+    999,
+    1234
+  ],
+  "summary_csv": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 5/results/focused_100_seed_summary.csv",
+  "vina_path": "/Users/vihaanagrawal/miniforge/envs/biomni_e1/bin/vina",
+  "vina_version": "AutoDock Vina v1.2.7"
+}

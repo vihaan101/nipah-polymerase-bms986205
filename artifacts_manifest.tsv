@@ -1,0 +1,21 @@
+path	size_bytes	sha256	reason
+Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.chk	19659568	cea8591775ac919427fffb46ed890f4f21f769958b4be8256649404a53de5c4a	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready.pdb	13162225	50bf58dd42b66be0d0f17e3759e68d9f13b0ab5338ca149760dac515aa257edc	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/A_ERDRP_WT/equilibrated_production_ready_state.xml	26744532	62a2a3cb696650dfdd826637acf2de14fe29cf46a1d8c56be1b45532c1f3e7de	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/A_ERDRP_WT/system.xml	50717528	8f3d237e4e9608554443cf9b8033fad1145b670bc321574d722da99cb472ea37	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/A_ERDRP_WT/topology.pdb	13162225	0ea1a35b87e0918d009ca133f77f8a7ef2ba466683948a98133f9e992a976167	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.chk	19659568	fc592b03fbea42122b0c8c4a279dfe3d0df200bdb3c4ea3bf984b4bc68e7feab	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready.pdb	13160605	e2170545407a8e579183734f0ab7421fa2bc68bf8c987e36b0de0206c32650e6	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/B_ERDRP_MUT/equilibrated_production_ready_state.xml	26739008	4f8adc302864378cc4ad06c2575d32471f7e32adf54a4a0eaa1f97d3efd2ad37	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/B_ERDRP_MUT/system.xml	50698621	52cc050603a4a6715b93610845d812c13d729552576b9278ed0450662bf95420	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/B_ERDRP_MUT/topology.pdb	13160605	222ac14c773069c4d3a9fb14068c5006d0cbad855879711a566100c68af92bd3	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.chk	19659568	dfa9b083315ddb2b4771b17e49b153d563e696059b80e686c657248fc29c1620	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready.pdb	13161129	92a27503b5b58ef1873a326df6d33a522fb741f30b9492b3aed02a1a0c4417c8	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/C_BMS_WT/equilibrated_production_ready_state.xml	26742283	8adb455b2d884d84e2539c493ebe2f0cc4ddcae2b86484dbde809177c2b2c8d9	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/C_BMS_WT/system.xml	50707523	a0dc19e6127108c029938895eb87fecfec68c78344a2ab9d42fe82af2187b5c0	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/C_BMS_WT/topology.pdb	13161129	5db692d938335586408b4dea6743a7a884b9854f9972a5aa3b637d732a2f16d0	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready.chk	19659568	d9dcf8e2cbe024b3bff8c54a25357f3e45fef0cccd29c40c1b877d4c9a8a0c4c	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready.pdb	13160481	ba9b74f1fe0a5868461e964c67749410419e326243dd88e9f72c548bf843518e	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/D_BMS_MUT/equilibrated_production_ready_state.xml	26739120	718c0916cd17fd84887b91ce245068d09e6c741142626b2370a98710e3d916a5	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/D_BMS_MUT/system.xml	50690976	89aea0e26e091e912b7a568bf5661f5f305c08ca56bb02222a00dd597de77887	large generated Stage 6 MD system artifact externalized from Git
+Stages/Stage 6/results/D_BMS_MUT/topology.pdb	13160481	0d64320cb7577fcd3ff10ad02d205ae31f89ed18a40b9148b659a0aa9f472528	large generated Stage 6 MD system artifact externalized from Git

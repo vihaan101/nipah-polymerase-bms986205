@@ -1,0 +1,8 @@
+{
+  "candidate_count": 6,
+  "candidates_csv": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 5/results/focused_100_validation_candidates.csv",
+  "frozen_before_five_seed_docking": true,
+  "source_ranked": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 3/results/library_100_mutation_ranked.csv",
+  "source_ranked_sha256": "340cb4392db9394ef8138385732aa0e092dc7ad8bae6757ae36492da8addd231",
+  "top_n": 5
+}

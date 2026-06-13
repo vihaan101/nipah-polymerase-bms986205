@@ -1,0 +1,11 @@
+{
+  "comparators": [
+    {
+      "broad_library_member": false,
+      "ligand_pdbqt": "/Users/vihaanagrawal/Documents/nipahv-rdrp-md/Stages/Stage 1/data/ligands/ERDRP.pdbqt",
+      "name": "ERDRP-0519",
+      "role": "external_pocket_relevant_comparator"
+    }
+  ],
+  "erdrp_exclusion_statement": "ERDRP-0519 is outside the locked Broad library count."
+}

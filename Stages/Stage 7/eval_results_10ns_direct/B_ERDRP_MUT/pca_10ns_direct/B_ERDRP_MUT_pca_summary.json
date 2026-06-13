@@ -1,0 +1,22 @@
+{
+  "metric_name": "pca",
+  "case_id": "B_ERDRP_MUT",
+  "summary": {
+    "pocket_residue_count": 21,
+    "global_pc1_pct": 32.41728380264135,
+    "pocket_pc1_pct": 36.91562769029405
+  },
+  "derived_metrics": {
+    "global": {
+      "pc1_pct": 32.41728380264135,
+      "pc1_3_pct": 51.132784202708464
+    },
+    "pocket": {
+      "pc1_pct": 36.91562769029405,
+      "pc1_3_pct": 59.345114990095524
+    }
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

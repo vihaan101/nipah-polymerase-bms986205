@@ -1,0 +1,13 @@
+{
+  "metric_name": "mmgbsa",
+  "case_id": "C_BMS_WT",
+  "summary": {
+    "overall_mean": -36.85136428070797,
+    "overall_sem": 1.5922018419243757,
+    "replicates": 5
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

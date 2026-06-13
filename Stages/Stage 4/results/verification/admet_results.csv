@@ -1,0 +1,3 @@
+name,mw,logp,hbd,hba,lipinski_violations,lipinski_pass,clinical_phase,override_applied,final_status,override_rationale
+BMS-986205,410.92,6.58,1,2,1,False,Phase 3,True,PASS,"Retained despite 1 Lipinski violation(s) -- compound is in Phase 3 clinical trials, demonstrating acceptable human pharmacokinetics."
+ERDRP-0519,529.59,2.96,1,7,1,False,Preclinical,False,FAIL,

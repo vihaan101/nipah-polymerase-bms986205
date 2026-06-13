@@ -1,0 +1,292 @@
+{
+  "metric_name": "contacts",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "n_pocket_residues": 23,
+    "n_allosteric_residues": 30,
+    "top_pair_frequency": 1.0
+  },
+  "derived_metrics": {
+    "top_pairs": [
+      {
+        "resid_i": 535,
+        "resid_j": 544,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 544,
+        "resid_j": 545,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 545,
+        "resid_j": 546,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 587,
+        "resid_j": 588,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 660,
+        "resid_j": 661,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 664,
+        "resid_j": 668,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 667,
+        "resid_j": 668,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 667,
+        "resid_j": 671,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 727,
+        "resid_j": 731,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 731,
+        "resid_j": 736,
+        "frequency": 1.0,
+        "early_frequency": 1.0,
+        "late_frequency": 1.0,
+        "window_delta": 0.0
+      },
+      {
+        "resid_i": 582,
+        "resid_j": 695,
+        "frequency": 0.9992000000000001,
+        "early_frequency": 1.0,
+        "late_frequency": 0.9984,
+        "window_delta": -0.0016000000000000458
+      },
+      {
+        "resid_i": 587,
+        "resid_j": 591,
+        "frequency": 0.9992000000000001,
+        "early_frequency": 1.0,
+        "late_frequency": 0.9984,
+        "window_delta": -0.0016000000000000458
+      },
+      {
+        "resid_i": 588,
+        "resid_j": 591,
+        "frequency": 0.9992000000000001,
+        "early_frequency": 1.0,
+        "late_frequency": 0.9984,
+        "window_delta": -0.0016000000000000458
+      },
+      {
+        "resid_i": 671,
+        "resid_j": 675,
+        "frequency": 0.9992000000000001,
+        "early_frequency": 1.0,
+        "late_frequency": 0.9984,
+        "window_delta": -0.0016000000000000458
+      },
+      {
+        "resid_i": 588,
+        "resid_j": 660,
+        "frequency": 0.9984,
+        "early_frequency": 0.9984,
+        "late_frequency": 0.9984,
+        "window_delta": 0.0
+      }
+    ],
+    "residue_persistence": [
+      {
+        "resid": 587,
+        "mean_pair_frequency": 0.23214545454545454,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 667,
+        "mean_pair_frequency": 0.22123636363636365,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 660,
+        "mean_pair_frequency": 0.20199999999999999,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 544,
+        "mean_pair_frequency": 0.18999999999999997,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 588,
+        "mean_pair_frequency": 0.1872,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 584,
+        "mean_pair_frequency": 0.18189090909090908,
+        "max_pair_frequency": 0.9975999999999999,
+        "n_pairs": 22
+      },
+      {
+        "resid": 668,
+        "mean_pair_frequency": 0.1803636363636364,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 738,
+        "mean_pair_frequency": 0.1669818181818182,
+        "max_pair_frequency": 0.9112,
+        "n_pairs": 22
+      },
+      {
+        "resid": 736,
+        "mean_pair_frequency": 0.15538181818181818,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 695,
+        "mean_pair_frequency": 0.1502181818181818,
+        "max_pair_frequency": 0.9992000000000001,
+        "n_pairs": 22
+      },
+      {
+        "resid": 591,
+        "mean_pair_frequency": 0.14792727272727274,
+        "max_pair_frequency": 0.9992000000000001,
+        "n_pairs": 22
+      },
+      {
+        "resid": 731,
+        "mean_pair_frequency": 0.14381818181818182,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 671,
+        "mean_pair_frequency": 0.14374545454545457,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 664,
+        "mean_pair_frequency": 0.1413818181818182,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      },
+      {
+        "resid": 545,
+        "mean_pair_frequency": 0.14123636363636363,
+        "max_pair_frequency": 1.0,
+        "n_pairs": 22
+      }
+    ],
+    "window_similarity": {
+      "pearson_r": 0.9926599638046163,
+      "frobenius_diff": 0.9242240421023462
+    }
+  },
+  "interpretation": [
+    {
+      "criterion_id": "contact_persistence",
+      "status": "descriptive",
+      "detail": "Residue-specific contact persistence is reported descriptively. Early/late window similarity is included for reproducibility-friendly comparison without universal contact-count thresholds.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "window_similarity": {
+          "pearson_r": 0.9926599638046163,
+          "frobenius_diff": 0.9242240421023462
+        },
+        "top_pairs": [
+          {
+            "resid_i": 535,
+            "resid_j": 544,
+            "frequency": 1.0,
+            "early_frequency": 1.0,
+            "late_frequency": 1.0,
+            "window_delta": 0.0
+          },
+          {
+            "resid_i": 544,
+            "resid_j": 545,
+            "frequency": 1.0,
+            "early_frequency": 1.0,
+            "late_frequency": 1.0,
+            "window_delta": 0.0
+          },
+          {
+            "resid_i": 545,
+            "resid_j": 546,
+            "frequency": 1.0,
+            "early_frequency": 1.0,
+            "late_frequency": 1.0,
+            "window_delta": 0.0
+          },
+          {
+            "resid_i": 587,
+            "resid_j": 588,
+            "frequency": 1.0,
+            "early_frequency": 1.0,
+            "late_frequency": 1.0,
+            "window_delta": 0.0
+          },
+          {
+            "resid_i": 660,
+            "resid_j": 661,
+            "frequency": 1.0,
+            "early_frequency": 1.0,
+            "late_frequency": 1.0,
+            "window_delta": 0.0
+          }
+        ]
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [],
+  "limitations": [
+    "No experimental residue-priority list or replica ensemble is available for stronger contact interpretation."
+  ]
+}

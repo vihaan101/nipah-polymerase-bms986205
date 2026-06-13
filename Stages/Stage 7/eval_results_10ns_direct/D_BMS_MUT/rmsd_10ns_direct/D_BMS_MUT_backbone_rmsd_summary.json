@@ -1,0 +1,79 @@
+{
+  "metric_name": "backbone_rmsd",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "n": 250,
+    "mean": 2.283068410425271,
+    "std": 0.24048599656676073,
+    "median": 2.3568608192133116,
+    "min": 1.961470404269631e-06,
+    "max": 2.549258527916085,
+    "final": 2.5247893940663153,
+    "time_start": 0.004000000011925623,
+    "time_end": 9.964000029706726
+  },
+  "derived_metrics": {
+    "late_window": {
+      "n_points": 62,
+      "mean": 2.452938518084008,
+      "std": 0.0539159687303915,
+      "slope_per_ns": 0.05893968879966108,
+      "range": 0.23197751423908874
+    },
+    "rolling_window": {
+      "window_size": 25,
+      "rolling_mean_range": 0.7071821654572226,
+      "rolling_std_mean": 0.048678123046402136
+    },
+    "split_window": {
+      "first_mean": 2.1433175330820213,
+      "second_mean": 2.4228192877685215,
+      "mean_shift": 0.2795017546865002,
+      "pooled_std": 0.1957120507952943
+    },
+    "pocket_series_summary": {
+      "n": 250,
+      "mean": 1.0153799062395914,
+      "std": 0.09449270293090536,
+      "median": 1.0246976935063987,
+      "min": 2.913718372473754e-07,
+      "max": 1.2127464855687218,
+      "final": 1.1296807437780287,
+      "time_start": 0.004000000011925623,
+      "time_end": 9.964000029706726
+    }
+  },
+  "interpretation": [
+    {
+      "criterion_id": "backbone_plateau",
+      "status": "descriptive",
+      "detail": "Heuristic plateau proxy based on late-window slope, rolling-window stability, and split-window drift. This approximates the literature-backed plateau concept without claiming a universal RMSD cutoff.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "late_window": {
+          "n_points": 62,
+          "mean": 2.452938518084008,
+          "std": 0.0539159687303915,
+          "slope_per_ns": 0.05893968879966108,
+          "range": 0.23197751423908874
+        },
+        "rolling_window": {
+          "window_size": 25,
+          "rolling_mean_range": 0.7071821654572226,
+          "rolling_std_mean": 0.048678123046402136
+        },
+        "split_window": {
+          "first_mean": 2.1433175330820213,
+          "second_mean": 2.4228192877685215,
+          "mean_shift": 0.2795017546865002,
+          "pooled_std": 0.1957120507952943
+        }
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [],
+  "limitations": []
+}

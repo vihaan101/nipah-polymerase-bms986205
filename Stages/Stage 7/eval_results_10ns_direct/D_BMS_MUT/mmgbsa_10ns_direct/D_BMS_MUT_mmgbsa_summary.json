@@ -1,0 +1,13 @@
+{
+  "metric_name": "mmgbsa",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "overall_mean": -42.61917911296136,
+    "overall_sem": 1.3016777481177835,
+    "replicates": 5
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

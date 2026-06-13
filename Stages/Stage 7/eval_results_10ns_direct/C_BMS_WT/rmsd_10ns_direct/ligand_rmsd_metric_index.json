@@ -1,0 +1,6 @@
+{
+  "metric_name": "ligand_rmsd",
+  "case_summaries": {
+    "C_BMS_WT": "/home/azureuser/workspace/Stages/Stage 7/rmsd_10ns_direct/C_BMS_WT_ligand_rmsd_summary.json"
+  }
+}

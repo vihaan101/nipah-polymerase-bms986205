@@ -1,0 +1,87 @@
+{
+  "metric_name": "rmsf",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "n": 1272,
+    "mean": 0.9415132239845663,
+    "std": 0.44604226797698937,
+    "median": 0.8047498452812816,
+    "min": 0.41926580254588564,
+    "max": 3.640173701839855,
+    "final": 3.2962008015444724
+  },
+  "derived_metrics": {
+    "pocket_vs_core": {
+      "pocket_mean_rmsf_A": 0.7799505146880537,
+      "core_proxy_mean_rmsf_A": 0.7991934835808293,
+      "difference_A": -0.019242968892775658
+    },
+    "mutation_site": {
+      "resid": 591,
+      "rmsf_A": 0.7214609410776807
+    },
+    "top_flexible_residues": [
+      {
+        "resid": 1201,
+        "resname": "GLU",
+        "rmsf_A": 3.640173701839855,
+        "in_pocket": false,
+        "in_core_proxy": false
+      },
+      {
+        "resid": 1202,
+        "resname": "GLY",
+        "rmsf_A": 3.509365358822312,
+        "in_pocket": false,
+        "in_core_proxy": false
+      },
+      {
+        "resid": 1272,
+        "resname": "ASN",
+        "rmsf_A": 3.2962008015444724,
+        "in_pocket": false,
+        "in_core_proxy": false
+      },
+      {
+        "resid": 1,
+        "resname": "SER",
+        "rmsf_A": 2.9767082971369945,
+        "in_pocket": false,
+        "in_core_proxy": true
+      },
+      {
+        "resid": 1200,
+        "resname": "ILE",
+        "rmsf_A": 2.9097621644595155,
+        "in_pocket": false,
+        "in_core_proxy": false
+      }
+    ],
+    "replica_hooks": {
+      "replica_comparison_supported": true,
+      "replica_inputs_present": false
+    }
+  },
+  "interpretation": [
+    {
+      "criterion_id": "rmsf_profile",
+      "status": "descriptive",
+      "detail": "RMSF is reported descriptively. Pocket/core comparisons are provided to aid interpretation without imposing a universal threshold.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "pocket_residue_count": 29,
+        "core_proxy_residue_count": 509
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [
+    "Pocket residues come from the frame-0 WT reference structure.",
+    "Core proxy uses the most buried 40% of frame-0 CA atoms by distance to protein COM."
+  ],
+  "limitations": [
+    "No experimental flexibility proxy or replica ensemble is available in this pipeline."
+  ]
+}

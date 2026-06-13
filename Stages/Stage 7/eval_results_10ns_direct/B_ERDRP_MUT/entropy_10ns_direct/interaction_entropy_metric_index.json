@@ -1,0 +1,6 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_summaries": {
+    "B_ERDRP_MUT": "/home/azureuser/workspace/Stages/Stage 7/entropy_10ns_direct/B_ERDRP_MUT_interaction_entropy_summary.json"
+  }
+}

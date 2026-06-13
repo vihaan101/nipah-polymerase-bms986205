@@ -1,0 +1,61 @@
+{
+  "stage": 5,
+  "seeds": [
+    42,
+    101,
+    999,
+    1234,
+    2023
+  ],
+  "source": "focused_100_seed_summary_v1",
+  "conditions": {
+    "BMS_WT": {
+      "count": 5,
+      "values": [
+        -7.724,
+        -7.726,
+        -7.722,
+        -7.712,
+        -7.723
+      ]
+    },
+    "BMS_MUT": {
+      "count": 5,
+      "values": [
+        -7.454,
+        -7.435,
+        -7.493,
+        -7.462,
+        -7.452
+      ]
+    },
+    "ERDRP_WT": {
+      "count": 5,
+      "values": [
+        -6.684,
+        -6.579,
+        -6.484,
+        -6.698,
+        -6.701
+      ]
+    },
+    "ERDRP_MUT": {
+      "count": 5,
+      "values": [
+        -6.527,
+        -6.532,
+        -6.525,
+        -6.521,
+        -6.512
+      ]
+    }
+  },
+  "bms_delta": 0.2622,
+  "bms_delta_err": 0.022,
+  "erdrp_delta": 0.1058,
+  "erdrp_delta_err": 0.0958,
+  "verdict": {
+    "bms": "RESILIENT",
+    "erdrp": "RESILIENT"
+  }
+}

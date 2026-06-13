@@ -1,0 +1,25 @@
+MODEL 1
+REMARK VINA RESULT:    -3.247      0.000      0.000
+REMARK INTER + INTRA:          -3.247
+REMARK INTER:                  -3.247
+REMARK INTRA:                   0.000
+REMARK UNBOUND:                 0.000
+REMARK SMILES BrC1C(Br)C(Br)C(Br)C(Br)C1Br
+REMARK SMILES IDX 6 1 5 2 3 3 4 4 2 5 1 6 11 7 12 8 9 9 10 10 7 11 8 12
+REMARK H PARENT
+ROOT
+ATOM      1  Br  UNL     1     134.715 139.440 153.021  1.00  0.00    -0.087 Br
+ATOM      2  C   UNL     1     133.183 139.286 151.818  1.00  0.00     0.087 C 
+ATOM      3  C   UNL     1     132.462 137.934 151.915  1.00  0.00     0.087 C 
+ATOM      4  Br  UNL     1     131.828 137.504 153.709  1.00  0.00    -0.087 Br
+ATOM      5  C   UNL     1     133.101 136.747 151.180  1.00  0.00     0.087 C 
+ATOM      6  Br  UNL     1     134.602 135.949 152.144  1.00  0.00    -0.087 Br
+ATOM      7  C   UNL     1     133.444 137.154 149.741  1.00  0.00     0.087 C 
+ATOM      8  Br  UNL     1     134.113 135.687 148.643  1.00  0.00    -0.087 Br
+ATOM      9  C   UNL     1     134.207 138.471 149.549  1.00  0.00     0.087 C 
+ATOM     10  Br  UNL     1     136.123 138.321 149.901  1.00  0.00    -0.087 Br
+ATOM     11  C   UNL     1     133.523 139.586 150.351  1.00  0.00     0.087 C 
+ATOM     12  Br  UNL     1     134.296 141.354 150.067  1.00  0.00    -0.087 Br
+ENDROOT
+TORSDOF 0
+ENDMDL

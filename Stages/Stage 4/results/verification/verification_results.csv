@@ -1,0 +1,2 @@
+name,wt_affinity,mut_affinity,delta_affinity,wt_dist,mut_dist,delta_dist,ghost_clash_dist,ghost_clash,time
+BMS-986205,-7.687,-7.442,0.2450000000000001,3.4351887387280335,3.269165215178222,-0.16602352354981154,3.269165215178222,False,23.761470079421997

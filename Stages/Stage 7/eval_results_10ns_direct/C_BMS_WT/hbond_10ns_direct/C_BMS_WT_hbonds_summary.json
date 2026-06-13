@@ -1,0 +1,95 @@
+{
+  "metric_name": "hbonds",
+  "case_id": "C_BMS_WT",
+  "summary": {
+    "n_bonds": 3234,
+    "top_occupancy_pct": 27.6
+  },
+  "derived_metrics": {
+    "top_bonds": [
+      {
+        "donor_acceptor": "TRP667:HE3-UNK1:C2x",
+        "occupancy_pct": 27.6,
+        "occupancy_early_pct": 37.120000000000005,
+        "occupancy_late_pct": 18.080000000000002,
+        "window_delta_pct": -19.04,
+        "n_frames_present": 69
+      },
+      {
+        "donor_acceptor": "GLY661:H-UNK1:H21x",
+        "occupancy_pct": 26.559999999999995,
+        "occupancy_early_pct": 33.28,
+        "occupancy_late_pct": 19.84,
+        "window_delta_pct": -13.440000000000001,
+        "n_frames_present": 66
+      },
+      {
+        "donor_acceptor": "UNK1:H17x-GLU695:HG3",
+        "occupancy_pct": 23.919999999999998,
+        "occupancy_early_pct": 29.6,
+        "occupancy_late_pct": 18.240000000000002,
+        "window_delta_pct": -11.36,
+        "n_frames_present": 59
+      },
+      {
+        "donor_acceptor": "GLU660:HG2-UNK1:H23x",
+        "occupancy_pct": 23.68,
+        "occupancy_early_pct": 21.599999999999998,
+        "occupancy_late_pct": 25.759999999999998,
+        "window_delta_pct": 4.159999999999998,
+        "n_frames_present": 59
+      },
+      {
+        "donor_acceptor": "TRP667:HZ3-UNK1:H1x",
+        "occupancy_pct": 22.880000000000003,
+        "occupancy_early_pct": 26.24,
+        "occupancy_late_pct": 19.52,
+        "window_delta_pct": -6.719999999999999,
+        "n_frames_present": 57
+      },
+      {
+        "donor_acceptor": "LEU731:CD1-UNK1:H18x",
+        "occupancy_pct": 18.880000000000003,
+        "occupancy_early_pct": 24.32,
+        "occupancy_late_pct": 13.440000000000001,
+        "window_delta_pct": -10.879999999999999,
+        "n_frames_present": 47
+      },
+      {
+        "donor_acceptor": "TRP667:HZ3-UNK1:O1x",
+        "occupancy_pct": 18.56,
+        "occupancy_early_pct": 19.2,
+        "occupancy_late_pct": 17.92,
+        "window_delta_pct": -1.2799999999999998,
+        "n_frames_present": 46
+      },
+      {
+        "donor_acceptor": "UNK1:C2x-GLN664:HA",
+        "occupancy_pct": 18.479999999999997,
+        "occupancy_early_pct": 28.32,
+        "occupancy_late_pct": 8.64,
+        "window_delta_pct": -19.68,
+        "n_frames_present": 46
+      },
+      {
+        "donor_acceptor": "UNK1:H12x-GLU695:HB2",
+        "occupancy_pct": 17.520000000000003,
+        "occupancy_early_pct": 16.479999999999997,
+        "occupancy_late_pct": 18.56,
+        "window_delta_pct": 2.0800000000000005,
+        "n_frames_present": 43
+      },
+      {
+        "donor_acceptor": "TRP667:HE3-UNK1:H4x",
+        "occupancy_pct": 17.360000000000003,
+        "occupancy_early_pct": 26.879999999999995,
+        "occupancy_late_pct": 7.840000000000001,
+        "window_delta_pct": -19.04,
+        "n_frames_present": 43
+      }
+    ]
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

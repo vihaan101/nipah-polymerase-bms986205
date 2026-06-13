@@ -1,0 +1,91 @@
+{
+  "metric_name": "plif",
+  "case_id": "C_BMS_WT",
+  "summary": {
+    "method": "prolif-2.1.0",
+    "n_frames": 1250,
+    "n_interaction_entries": 17
+  },
+  "derived_metrics": {
+    "top_interactions": [
+      {
+        "residue": "GLY692.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 29.2
+      },
+      {
+        "residue": "GLN664.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 28.4
+      },
+      {
+        "residue": "GLU695.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 12.4
+      },
+      {
+        "residue": "ILE697.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 11.200000000000001
+      },
+      {
+        "residue": "THR582.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 10.8
+      },
+      {
+        "residue": "HIS736.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 10.8
+      },
+      {
+        "residue": "THR671.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 10.0
+      },
+      {
+        "residue": "LEU727.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 6.8
+      },
+      {
+        "residue": "LEU584.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 6.0
+      },
+      {
+        "residue": "LEU675.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 4.3999999999999995
+      },
+      {
+        "residue": "LEU738.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 4.3999999999999995
+      },
+      {
+        "residue": "GLN691.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 3.2
+      },
+      {
+        "residue": "LEU731.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.6
+      },
+      {
+        "residue": "ARG544.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.2
+      },
+      {
+        "residue": "THR743.A",
+        "interaction_type": "VdWContact",
+        "frequency_pct": 1.2
+      }
+    ]
+  },
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

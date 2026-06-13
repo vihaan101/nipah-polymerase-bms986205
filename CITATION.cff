@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this workflow, please cite it using this metadata."
+title: "Nipah RdRp Inhibitor Resistance MD Workflow"
+authors:
+  - name: "vihaan101"
+license: "MIT"
+repository-code: "https://github.com/vihaan101/nipah-rdrp-inhibitor-resistance-md"
+abstract: "Reproducible staged docking and molecular dynamics workflow for a Nipah virus RdRp inhibitor-resistance study."
+keywords:
+  - "Nipah virus"
+  - "RNA-dependent RNA polymerase"
+  - "molecular dynamics"
+  - "docking"
+  - "reproducibility"
+date-released: "2026-06-07"
+version: "0.1.0"

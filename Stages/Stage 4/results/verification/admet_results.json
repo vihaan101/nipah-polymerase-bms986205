@@ -1,0 +1,27 @@
+[
+  {
+    "name": "BMS-986205",
+    "mw": 410.92,
+    "logp": 6.58,
+    "hbd": 1,
+    "hba": 2,
+    "lipinski_violations": 1,
+    "lipinski_pass": false,
+    "clinical_phase": "Phase 3",
+    "override_applied": true,
+    "final_status": "PASS",
+    "override_rationale": "Retained despite 1 Lipinski violation(s) -- compound is in Phase 3 clinical trials, demonstrating acceptable human pharmacokinetics."
+  },
+  {
+    "name": "ERDRP-0519",
+    "mw": 529.59,
+    "logp": 2.96,
+    "hbd": 1,
+    "hba": 7,
+    "lipinski_violations": 1,
+    "lipinski_pass": false,
+    "clinical_phase": "Preclinical",
+    "override_applied": false,
+    "final_status": "FAIL"
+  }
+]

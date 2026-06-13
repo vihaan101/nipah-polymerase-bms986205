@@ -1,0 +1,14 @@
+name,smiles,mw,logp,moa,indication
+NU-6027,Nc1nc(N)c(N=O)c(OCC2CCCCC2)n1,251.2899999999999,1.998,CDK inhibitor,
+"2-(chloromethyl)-5,6,7,8-tetrahydro[1]benzothieno[2,3-d]pyrimidin-4(3H)-one",ClC=C1Nc2sc3CCCCc3c2C(=O)N1,254.74199999999993,2.8199000000000005,,
+indium-tri(2-propanolate),CC(C)O[In](OC(C)C)OC(C)C,292.08200000000005,2.2463000000000006,,
+IEM1754,NCCCCCNCC12CC3CC(CC(C3)C1)C2,250.42999999999995,2.921400000000001,glutamate receptor antagonist,
+ifosfamide,ClCCN[P@@]1(=O)OCCCN1CCCl |r|,261.08899999999994,1.884,DNA alkylating agent,testicular carcinoma|hemorrhagic cystitis
+ZSTK-474,FC(F)c1nc2ccccc2n1-c1nc(nc(n1)N1CCOCC1)N1CCOCC1,417.4200000000003,1.8212999999999997,PI3K inhibitor,
+GAL-021,CCCNc1nc(NCCC)nc(n1)N(C)OC,254.338,1.513,calcium channel blocker,
+oxymatrine,[H][C@]12CCC[N@@+]3([O-])CCC[C@]([H])([C@@]4([H])CCCC(=O)N4C1)[C@]23[H],264.36899999999997,1.8843,,
+phenytoin,O=C1NC(=O)C(N1)(c1ccccc1)c1ccccc1,252.273,1.7695999999999998,hydantoin antiepileptic,seizures
+motapizone,CC1=C(NNC(=O)C1)c1cc(cs1)-n1ccnc1 |t:1|,260.322,1.6892999999999998,phosphodiesterase inhibitor,
+savolitinib,C[C@@H](c1ccc2nccn2c1)n1nnc2ncc(nc12)-c1cnn(C)c1,345.37000000000006,1.8787999999999996,c-Met inhibitor,
+zolmitriptan,CN(C)CCc1c[nH]c2ccc(C[C@H]3COC(=O)N3)cc12,287.36299999999994,1.9229,serotonin receptor agonist,migraine headache
+GPi-688,"OC[C@H](O)CN1C(=O)[C@@H](Cc2ccccc12)NC(=O)c1cc2cc(Cl)sc2[nH]1 |a:2,&1:8|",419.89000000000016,1.9236999999999995,glycogen phosphorylase inhibitor,

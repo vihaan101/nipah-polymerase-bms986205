@@ -1,0 +1,102 @@
+[
+  {
+    "artifact_path": "Stages/Stage 3/data/expanded_library.csv",
+    "column_count": 6,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 50,
+    "sha256": "7d9416726f9cc13b3f4686f16a5a5732acbdfce07b1ca4a73c30af8185ced251",
+    "status": "historical",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 3/data/filtered_library.csv",
+    "column_count": 6,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 13,
+    "sha256": "d1cfcb3d3e2b5a166e5a912f8b5ca02831ded519d6a686c9951300fa02a03397",
+    "status": "historical",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 3/results/resistance_screening_results.csv",
+    "column_count": 9,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 13,
+    "sha256": "f17a26b0740fc1b69cd1908ec56a563c66b6b4b9edfa464835f63f84dd09b5ae",
+    "status": "historical",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/data/lake/Broad_Repurposing_Hub.csv",
+    "column_count": 1,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 6798,
+    "sha256": "65792fa849712c28b7e042c8648f9adff67ea24d639a05a6f6a8ea8f8f3168ac",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/data/lake/Broad_Repurposing_Samples.csv",
+    "column_count": 1,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 20283,
+    "sha256": "428a60f43754d802b8b0bd8cb5708e401739d406d54f14601a59f5579b65f133",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 4/results/verification/verification_results.csv",
+    "column_count": 10,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 1,
+    "sha256": "1164577b30ed08d2594609b6d128122758454d756f60374e6f5327244482243c",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 4/results/verification/ghost_clash_verdict.json",
+    "column_count": null,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": null,
+    "sha256": "94fb9b0d43fb966037fb21754e1f2b31afe01dec204dbdfbcea898152613c873",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 4/results/verification/admet_results.csv",
+    "column_count": 11,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 2,
+    "sha256": "d3a394ca4e48ab0e868df2d6fdf8aafa11aaf749dfc88ab6bd467d5b1bffba27",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 5/results/stage5_verdict.json",
+    "column_count": null,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": null,
+    "sha256": "0f94e3e076605ef4008946ba49a353fda1fca9fff4f03aeba482bcf657c522ed",
+    "status": "current",
+    "used_in_manuscript_table": null
+  },
+  {
+    "artifact_path": "Stages/Stage 7/eval_results_10ns_direct/comparison_figures/docking_affinity_summary.csv",
+    "column_count": 7,
+    "created_by_script": null,
+    "exists": true,
+    "row_count": 4,
+    "sha256": "0ca323af57fb60b2495f0ab62cbbfa95ac463fe84ee9ba05833d52507318acb2",
+    "status": "current",
+    "used_in_manuscript_table": null
+  }
+]

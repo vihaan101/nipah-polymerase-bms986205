@@ -1,0 +1,23 @@
+# Core analysis stack
+numpy
+pandas
+scipy
+matplotlib
+requests
+
+# Structure, docking, and cheminformatics
+biopython
+rdkit
+gemmi
+meeko
+spyrmsd
+
+# Molecular dynamics and trajectory analysis
+MDAnalysis
+openmm
+openmmforcefields
+openff-toolkit
+pdbfixer
+
+# Tests
+pytest

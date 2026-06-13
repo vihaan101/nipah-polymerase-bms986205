@@ -1,0 +1,51 @@
+name,smiles,mw,logp,moa,indication
+flutamide,CC(C)C(=O)Nc1ccc(c(c1)C(F)(F)F)[N+]([O-])=O,276.214,3.2081000000000017,androgen receptor antagonist,prostate cancer
+"1,2,3,4,5,6-hexabromocyclohexane",BrC1C(Br)C(Br)C(Br)C(Br)C1Br,557.538,4.581000000000001,JAK inhibitor,
+atiprimod,CCCC1(CCC)CCC2(CCN(CCCN(CC)CC)C2)CC1,336.6080000000001,5.571000000000006,JAK inhibitor|STAT inhibitor,
+NU-6027,Nc1nc(N)c(N=O)c(OCC2CCCCC2)n1,251.28999999999994,1.998,CDK inhibitor,
+lycopene,CC(C)=CCC\C(C)=C\C=C\C(\C)=C\C=C\C(\C)=C\C=C\C=C(/C)\C=C\C=C(/C)\C=C\C=C(/C)CCC=C(C)C,536.8880000000003,12.937999999999976,free radical scavenger,
+A-438079,Clc1cccc(-c2nnnn2Cc2cccnc2)c1Cl,306.15600000000006,3.090200000000001,purinergic receptor antagonist,
+perfluorodecalin,FC1(F)C(F)(F)C(F)(F)C2(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C2(F)C1(F)F,462.07399999999996,5.512600000000003,,cosmetic
+ivermectin,"CC[C@H](C)[C@H]1O[C@]2(CC[C@@H]1C)C[C@@H]1C[C@@H](C\C=C(C)\[C@@H](O[C@H]3C[C@H](OC)[C@@H](O[C@H]4C[C@H](OC)[C@@H](O)[C@H](C)O4)[C@H](C)O3)[C@@H](C)\C=C\C=C3/CO[C@@H]4[C@H](O)C(C)=C[C@@H](C(=O)O1)[C@]34O)O2 |c:17,48,56,t:46|",875.1060000000002,5.601400000000008,benzodiazepine receptor agonist,gastrointestinal roundworms|lungworms|cattle grubs|mites|lice|horn flies
+"4,5,6,7-tetrabromobenzotriazole",Brc1c(Br)c(Br)c2n[nH]nc2c1Br,434.71100000000007,4.0079,casein kinase inhibitor,
+metocurine,COc1ccc2C[C@@H]3c4c(CC[N+]3(C)C)cc(OC)c(OC)c4Oc3ccc(C[C@H]4c5cc(Oc1c2)c(OC)cc5CC[N+]4(C)C)cc3,652.832,7.45160000000001,acetylcholine receptor antagonist,muscle relaxant
+"2-(chloromethyl)-5,6,7,8-tetrahydro[1]benzothieno[2,3-d]pyrimidin-4(3H)-one",ClC=C1Nc2sc3CCCCc3c2C(=O)N1,254.74199999999993,2.8199000000000005,,
+hemin,"CC1=C(CCC(O)=O)\C2=C\c3c(CCC(O)=O)c(C)c4\C=C5/N=C(/C=c6/c(C=C)c(C)\c(=C\C1=N2)n6[Fe](O)n34)C(C)=C5C=C |c:1,20,34,45,t:8,22,24,31|",633.5060000000001,4.181540000000004,enzyme inducer,acute intermittent porphyria (AIP)|hypertension|ventricular tachycardia (VT)
+indium-tri(2-propanolate),CC(C)O[In](OC(C)C)OC(C)C,292.08200000000005,2.2463000000000006,,
+IEM1754,NCCCCCNCC12CC3CC(CC(C3)C1)C2,250.42999999999995,2.921400000000001,glutamate receptor antagonist,
+propidium-iodide,CC[N+](C)(CC)CCC[n+]1c(-c2ccccc2)c2cc(N)ccc2c2ccc(N)cc12,414.5970000000002,4.988400000000004,,
+NT157,Oc1cc(CNC(=S)\C=C\c2cc(O)c(O)c(Br)c2)cc(O)c1O,412.2610000000001,3.1075000000000017,IGF-1 inhibitor,
+betulinic-acid,CC(=C)[C@@H]1CC[C@@]2(CC[C@]3(C)[C@H](CC[C@@H]4[C@@]5(C)CC[C@H](O)C(C)(C)[C@@H]5CC[C@@]34C)[C@@H]12)C(O)=O,456.7110000000003,7.089500000000008,apoptosis stimulant|NFkB pathway inhibitor,
+tanaproget,Cn1c(ccc1-c1ccc2NC(=S)OC(C)(C)c2c1)C#N,297.38300000000004,3.5258800000000017,progesterone receptor agonist,
+rose-bengal,OC(=O)c1c(Cl)c(Cl)c(Cl)c(Cl)c1-c1c2cc(I)c(O)c(I)c2oc2c(I)c(=O)c(I)cc12,973.675,9.000599999999999,contrast agent|immunostimulant,diagnostic agent
+alisporivir,[H][C@]1(C)NC(=O)[C@H](C)NC(=O)[C@H](CC(C)C)N(C)C(=O)[C@@H](NC(=O)[C@H](C(C)C)N(CC)C(=O)[C@@H](C)N(C)C(=O)[C@H](CC)NC(=O)[C@]([H])([C@H](O)[C@H](C)C\C=C\C)N(C)C(=O)[C@H](C(C)C)N(C)C(=O)[C@]([H])(CC(C)C)N(C)C(=O)[C@H](CC(C)C)N(C)C1=O)C(C)C,1216.6619999999991,3.6575000000000086,cyclophilin inhibitor,
+ifosfamide,ClCCN[P@@]1(=O)OCCCN1CCCl |r|,261.08899999999994,1.884,DNA alkylating agent,testicular carcinoma|hemorrhagic cystitis
+ZSTK-474,FC(F)c1nc2ccccc2n1-c1nc(nc(n1)N1CCOCC1)N1CCOCC1,417.42000000000036,1.8212999999999995,PI3K inhibitor,
+colfosceril-palmitate,"CCCCCCCCCCCCCCCC(=O)OC[C@H](CO[P@](O)(=O)OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCC |a:19,&1:22|",735.0609999999992,11.243799999999993,pulmonary surfactant,respiratory distress syndrome (RDS)
+perflubron,FC(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)Br,498.95799999999997,6.348200000000002,contrast agent,contrast agent
+GAL-021,CCCNc1nc(NCCC)nc(n1)N(C)OC,254.338,1.513,calcium channel blocker,
+KN-93,COc1ccc(cc1)S(=O)(=O)N(CCO)c1ccccc1CN(C)C\C=C\c1ccc(Cl)cc1,501.04800000000023,4.6814000000000044,calcium/calmodulin dependent protein kinase inhibitor,
+RITA,OCc1ccc(s1)-c1ccc(o1)-c1ccc(CO)s1,292.381,3.721200000000002,MDM inhibitor,
+AI-10-49,FC(F)(F)Oc1ccc2nc([nH]c2c1)-c1ccc(OCCOCCOc2ccc(nc2)-c2nc3ccc(OC(F)(F)F)cc3[nH]2)cn1,660.5310000000004,6.834800000000003,core binding factor inhibitor,
+amitraz,CN(\C=N\c1ccc(C)cc1C)\C=N\c1ccc(C)cc1C,293.41400000000004,4.871880000000004,adrenergic receptor agonist,generalized demodicosis
+NS-3861,"CN1[C@@H]2CC[C@H]1C=C(C2)c1sccc1Br |&1:2,5,c:7|",284.222,3.760500000000003,acetylcholine receptor agonist,
+oxymatrine,[H][C@]12CCC[N@@+]3([O-])CCC[C@]([H])([C@@]4([H])CCCC(=O)N4C1)[C@]23[H],264.36899999999997,1.8842999999999999,,
+alpha-tochopherol,"CC(C)CCC[C@@H](C)CCC[C@@H](C)CCC[C@@]1(C)CCc2c(C)c(O)c(C)c(C)c2O1 |&1:6,&2:11,&3:16,r|",430.71700000000027,8.840260000000002,antioxidant,vitamin E deficiency
+phenytoin,O=C1NC(=O)C(N1)(c1ccccc1)c1ccccc1,252.27300000000002,1.7695999999999998,hydantoin antiepileptic,seizures
+HER2-Inhibitor-1,Cc1cc(Nc2ncnc3ccc(cc23)-c2ccc(CNCCS(C)(=O)=O)o2)ccc1Oc1ccn2ncnc2c1,569.6470000000003,4.911020000000004,EGFR inhibitor,
+motapizone,CC1=C(NNC(=O)C1)c1cc(cs1)-n1ccnc1 |t:1|,260.322,1.6892999999999998,phosphodiesterase inhibitor,
+pimodivir,OC(=O)[C@H]1C2CCC(CC2)[C@@H]1Nc1nc(ncc1F)-c1c[nH]c2ncc(F)cc12,399.4010000000001,3.599400000000002,antiviral,
+savolitinib,C[C@@H](c1ccc2nccn2c1)n1nnc2ncc(nc12)-c1cnn(C)c1,345.37000000000006,1.8787999999999996,c-Met inhibitor,
+disulfiram,CCN(CC)C(=S)SSC(=S)N(CC)CC,296.5520000000001,3.6212000000000026,aldehyde dehydrogenase inhibitor|DNA methyltransferase inhibitor|TRPV agonist,abstinence from alcohol
+fenebrutinib,C[C@H]1CN(CCN1c1ccc(Nc2cc(cn(C)c2=O)-c2ccnc(N3CCn4c5CC(C)(C)Cc5cc4C3=O)c2CO)nc1)C1COC1,664.8110000000003,3.574200000000002,Bruton's tyrosine kinase (BTK) inhibitor,
+4BP-TQS,"NS(=O)(=O)c1ccc2N[C@@H]([C@H]3CC=C[C@@H]3c2c1)c1ccc(Br)cc1 |&1:9,&2:10,&3:14,r,c:12|",405.31700000000006,3.9230000000000027,nicotinic receptor agonist,
+desogestrel,CC[C@]12CC(=C)[C@H]3[C@@H](CCC4=CCCC[C@H]34)[C@@H]1CC[C@@]2(O)C#C |t:10|,310.481,4.869700000000005,progesterone receptor agonist,contraceptive
+docebenone,"CC1=C(C)C(=O)C(CCCCC#CCCCC#CCO)=C(C)C1=O |c:1,t:19|",326.436,3.520900000000002,lipoxygenase inhibitor,
+lindane,Cl[C@H]1[C@H](Cl)[C@@H](Cl)[C@@H](Cl)[C@H](Cl)[C@H]1Cl,290.832,3.644400000000001,,scabies
+WR99210,"CC1(C)N=C(N)N=C(N)N1OCCCOc1cc(Cl)c(Cl)cc1Cl |t:3,6|",394.69000000000005,3.028400000000002,dihydrofolate reductase inhibitor,malaria
+cephalomannine,C\C=C(/C)C(=O)N[C@H]([C@@H](O)C(=O)O[C@H]1C[C@@]2(O)[C@@H](OC(=O)c3ccccc3)[C@@H]3[C@@]4(CO[C@@H]4C[C@H](O)[C@@]3(C)C(=O)[C@H](OC(C)=O)C(=C1C)C2(C)C)OC(C)=O)c1ccccc1 |t:47|,831.912,3.3881000000000023,DNA polymerase inhibitor,
+zolmitriptan,CN(C)CCc1c[nH]c2ccc(C[C@H]3COC(=O)N3)cc12,287.36299999999994,1.9229,serotonin receptor agonist,migraine headache
+chlorisondamine-diiodide,C[N+](C)(C)CC[N+]1(C)Cc2c(C1)c(Cl)c(Cl)c(Cl)c2Cl,358.1400000000001,4.466600000000005,acetylcholine receptor antagonist,
+dabrafenib,CC(C)(C)c1nc(c(s1)-c1ccnc(N)n1)-c1cccc(NS(=O)(=O)c2c(F)cccc2F)c1F,519.5740000000002,5.364900000000002,RAF inhibitor,melanoma
+GPi-688,"OC[C@H](O)CN1C(=O)[C@@H](Cc2ccccc12)NC(=O)c1cc2cc(Cl)sc2[nH]1 |a:2,&1:8|",419.89000000000016,1.9236999999999997,glycogen phosphorylase inhibitor,
+CID-5458317,"OC1=c2ccccc2=C(NC2CCCCC2)\C1=C/c1ccccc1 |c:1,t:8|",317.4319999999999,3.480500000000002,MAP kinase phosphatase inhibitor,

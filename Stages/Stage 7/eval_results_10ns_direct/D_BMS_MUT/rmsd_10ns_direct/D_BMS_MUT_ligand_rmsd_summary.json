@@ -1,0 +1,107 @@
+{
+  "metric_name": "ligand_rmsd",
+  "case_id": "D_BMS_MUT",
+  "summary": {
+    "n": 250,
+    "mean": 1.8567976622581481,
+    "std": 0.21091851130224032,
+    "median": 1.8985796570777893,
+    "min": 0.7310365438461304,
+    "max": 2.2676875591278076,
+    "final": 1.9874889850616455,
+    "time_start": 0.0,
+    "time_end": 9.96
+  },
+  "derived_metrics": {
+    "late_window": {
+      "n_points": 62,
+      "mean": 2.0096855298165353,
+      "std": 0.11201868047488632,
+      "slope_per_ns": 0.08166787275295752,
+      "range": 0.5237290859222412
+    },
+    "heuristic_excursions": {
+      "above_2A": {
+        "threshold": 2.0,
+        "fraction_above": 0.252,
+        "longest_run_frames": 7,
+        "longest_run_time_ns": 0.28000000000000025
+      },
+      "above_4A": {
+        "threshold": 4.0,
+        "fraction_above": 0.0,
+        "longest_run_frames": 0,
+        "longest_run_time_ns": null
+      }
+    },
+    "pocket_residence_proxy": {
+      "cutoff_A": 5.0,
+      "residence_fraction": 1.0,
+      "mean_distance_A": 2.1203466681310847,
+      "max_distance_A": 2.565304001751958,
+      "final_distance_A": 1.6832384013879333,
+      "alternative_pocket_candidate": false
+    }
+  },
+  "interpretation": [
+    {
+      "criterion_id": "ligand_pose_retention",
+      "status": "descriptive",
+      "detail": "Heuristic proxy for the qualitative literature criterion of remaining in the starting pocket without sustained relocation. This is not a universal ligand RMSD cutoff.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "late_window": {
+          "n_points": 62,
+          "mean": 2.0096855298165353,
+          "std": 0.11201868047488632,
+          "slope_per_ns": 0.08166787275295752,
+          "range": 0.5237290859222412
+        },
+        "heuristic_excursions": {
+          "above_2A": {
+            "threshold": 2.0,
+            "fraction_above": 0.252,
+            "longest_run_frames": 7,
+            "longest_run_time_ns": 0.28000000000000025
+          },
+          "above_4A": {
+            "threshold": 4.0,
+            "fraction_above": 0.0,
+            "longest_run_frames": 0,
+            "longest_run_time_ns": null
+          }
+        },
+        "pocket_residence_proxy": {
+          "cutoff_A": 5.0,
+          "residence_fraction": 1.0,
+          "mean_distance_A": 2.1203466681310847,
+          "max_distance_A": 2.565304001751958,
+          "final_distance_A": 1.6832384013879333,
+          "alternative_pocket_candidate": false
+        }
+      },
+      "limitations": []
+    },
+    {
+      "criterion_id": "ligand_rmsd_2a_reference",
+      "status": "descriptive",
+      "detail": "Reported as retrospective reference context only; the 2 \u00c5 band is not treated as a universal success threshold.",
+      "metric_value": null,
+      "threshold": null,
+      "threshold_note": null,
+      "extra": {
+        "excursion_metrics": {
+          "threshold": 2.0,
+          "fraction_above": 0.252,
+          "longest_run_frames": 7,
+          "longest_run_time_ns": 0.28000000000000025
+        }
+      },
+      "limitations": []
+    }
+  ],
+  "notes": [],
+  "limitations": []
+}

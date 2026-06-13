@@ -1,0 +1,15 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_id": "B_ERDRP_MUT",
+  "summary": {
+    "mean_dG_mmgbsa": -45.5448122,
+    "std_dG": 4.326703931661093,
+    "neg_TdS_IE": 9.236901120664477,
+    "dG_corrected": -36.30791107933552,
+    "n_frames": 100
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}

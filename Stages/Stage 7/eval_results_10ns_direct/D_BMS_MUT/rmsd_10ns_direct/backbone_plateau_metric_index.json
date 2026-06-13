@@ -1,0 +1,6 @@
+{
+  "metric_name": "backbone_rmsd",
+  "case_summaries": {
+    "D_BMS_MUT": "/home/azureuser/workspace/Stages/Stage 7/rmsd_10ns_direct/D_BMS_MUT_backbone_rmsd_summary.json"
+  }
+}

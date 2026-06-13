@@ -1,0 +1,15 @@
+{
+  "metric_name": "interaction_entropy",
+  "case_id": "C_BMS_WT",
+  "summary": {
+    "mean_dG_mmgbsa": -36.851361000000004,
+    "std_dG": 3.4029860629131505,
+    "neg_TdS_IE": 6.647710851380891,
+    "dG_corrected": -30.203650148619108,
+    "n_frames": 100
+  },
+  "derived_metrics": {},
+  "interpretation": [],
+  "notes": [],
+  "limitations": []
+}
