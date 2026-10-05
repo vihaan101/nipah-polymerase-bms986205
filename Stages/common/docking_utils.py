@@ -262,6 +262,272 @@ def validate_workers(requested_workers: int, cpu_count_value: int | None = None)
     return min(requested_workers, max_workers)
 
 
+def resolve_dock_workers(cli_workers: int | None) -> int:
+    """Parallel Vina jobs: explicit --workers, else NIPAH_DOCK_WORKERS, else auto when NIPAH_AUTO_PARALLEL is set."""
+    if cli_workers is not None:
+        return validate_workers(cli_workers)
+    env_workers = os.environ.get("NIPAH_DOCK_WORKERS", "").strip()
+    if env_workers:
+        return validate_workers(int(env_workers))
+    if os.environ.get("NIPAH_AUTO_PARALLEL", "").lower() in ("1", "true", "yes"):
+        return validate_workers(os.cpu_count() or 1)
+    return 1
+
+
+def cuda_driver_available() -> bool:
+    """True when nvidia-smi succeeds (driver + device visible)."""
+    if shutil.which("nvidia-smi") is None:
+        return False
+    try:
+        result = subprocess.run(
+            ["nvidia-smi"], capture_output=True, timeout=5
+        )
+        return result.returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
+_OPENMM_CUDA_USABLE: bool | None = None
+
+
+def canonical_openmm_platform(name: str) -> str | None:
+    """Map env/user strings to OpenMM platform names (CUDA, OpenCL, CPU)."""
+    key = name.strip().upper()
+    if key == "CUDA":
+        return "CUDA"
+    if key in ("OPENCL", "OPEN CL"):
+        return "OpenCL"
+    if key == "CPU":
+        return "CPU"
+    return None
+
+
+def openmm_cuda_usable() -> bool:
+    """False when the OpenMM CUDA plugin cannot load (e.g. UNSUPPORTED_PTX_VERSION)."""
+    global _OPENMM_CUDA_USABLE
+    if os.environ.get("NIPAH_SKIP_CUDA_PROBE", "").strip().lower() in ("1", "true", "yes"):
+        return cuda_driver_available()
+    if _OPENMM_CUDA_USABLE is not None:
+        return _OPENMM_CUDA_USABLE
+    if not cuda_driver_available():
+        _OPENMM_CUDA_USABLE = False
+        return False
+    try:
+        import openmm as mm
+        from openmm import app, unit
+
+        system = mm.System()
+        system.addParticle(1.0 * unit.amu)
+        platform = mm.Platform.getPlatformByName("CUDA")
+        integrator = mm.VerletIntegrator(0.001)
+        sim = app.Simulation(
+            app.Topology(), system, integrator, platform, {"Precision": "mixed"}
+        )
+        sim.context.setPositions([[0, 0, 0]])
+        _OPENMM_CUDA_USABLE = True
+    except Exception:
+        _OPENMM_CUDA_USABLE = False
+    return _OPENMM_CUDA_USABLE
+
+
+def openmm_opencl_available() -> bool:
+    try:
+        import openmm as mm
+
+        mm.Platform.getPlatformByName("OpenCL")
+        return True
+    except Exception:
+        return False
+
+
+def resolve_stage6_cuda_device() -> str | None:
+    """Physical GPU index (CUDA_VISIBLE_DEVICES). None if CPU-only equilibration."""
+    if resolve_openmm_platform() == "CPU":
+        return None
+    if not cuda_driver_available():
+        return None
+    raw = os.environ.get("NIPAH_CUDA_DEVICE", "0").strip()
+    return raw if raw else "0"
+
+
+def resolve_openmm_platform() -> str:
+    """GPU/CPU platform for explicit OpenMM Simulation creation (equilibration)."""
+    explicit = os.environ.get("NIPAH_OPENMM_PLATFORM", "").strip()
+    if explicit:
+        canon = canonical_openmm_platform(explicit)
+        if canon:
+            return canon
+    env_default = os.environ.get("OPENMM_DEFAULT_PLATFORM", "").strip()
+    if env_default:
+        canon = canonical_openmm_platform(env_default)
+        # OPENMM_DEFAULT_PLATFORM=CPU is set for PDBFixer/build; do not force CPU equil on GPU nodes.
+        if canon and canon != "CPU":
+            return canon
+        if canon == "CPU" and not cuda_driver_available():
+            return "CPU"
+    if cuda_driver_available():
+        if openmm_cuda_usable():
+            return "CUDA"
+        if openmm_opencl_available():
+            return "OpenCL"
+    return "CPU"
+
+
+def create_openmm_simulation(topology, system, integrator_factory):
+    """Create Simulation on resolve_openmm_platform(), with CPU/CUDA/OpenCL fallbacks.
+
+    integrator_factory: callable returning a fresh LangevinMiddleIntegrator (one per attempt).
+    Returns (simulation, platform_name).
+    """
+    import openmm as mm
+    from openmm import app
+
+    primary = resolve_openmm_platform()
+    candidates = [primary]
+    for name in ("CUDA", "OpenCL", "CPU"):
+        if name not in candidates:
+            candidates.append(name)
+
+    last_err: Exception | None = None
+    for name in candidates:
+        try:
+            platform = mm.Platform.getPlatformByName(name)
+            integrator = integrator_factory()
+            if name in ("CUDA", "OpenCL"):
+                simulation = app.Simulation(
+                    topology,
+                    system,
+                    integrator,
+                    platform,
+                    {"Precision": "mixed"},
+                )
+            else:
+                simulation = app.Simulation(topology, system, integrator, platform)
+            return simulation, name
+        except Exception as exc:
+            last_err = exc
+            continue
+    raise RuntimeError(
+        f"Could not create OpenMM Simulation (tried {candidates}): {last_err}"
+    )
+
+
+def openmm_cpu_threads(parallel_cases: int = 1) -> int:
+    """Threads per OpenMM CPU simulation when running parallel_cases concurrently.
+
+    Honors caps for shared clusters:
+      NIPAH_OPENMM_THREADS — explicit threads per case (wins over auto split)
+      NIPAH_OPENMM_MAX_TOTAL — max threads across all concurrent cases combined
+    """
+    explicit = os.environ.get("NIPAH_OPENMM_THREADS", "").strip()
+    if explicit:
+        return max(1, int(explicit))
+
+    cpus = os.cpu_count() or 1
+    parallel_cases = max(1, parallel_cases)
+    reserve = min(parallel_cases, max(0, cpus - 1))
+    usable = max(1, cpus - reserve)
+    threads = max(1, usable // parallel_cases)
+
+    max_total_raw = os.environ.get("NIPAH_OPENMM_MAX_TOTAL", "").strip()
+    if max_total_raw:
+        max_total = max(1, int(max_total_raw))
+        threads = min(threads, max(1, max_total // parallel_cases))
+    return threads
+
+
+def _conda_env_with_antechamber(env: dict) -> str:
+    """Conda prefix that contains antechamber (Python env wins over inherited CONDA_PREFIX)."""
+    candidates: list[str] = []
+    if sys.executable:
+        candidates.append(str(Path(sys.executable).resolve().parent.parent))
+    conda_prefix = env.get("CONDA_PREFIX", "").strip()
+    if conda_prefix and conda_prefix not in candidates:
+        candidates.append(conda_prefix)
+    for prefix in candidates:
+        if (Path(prefix) / "bin" / "antechamber").exists():
+            return prefix
+    return candidates[0] if candidates else ""
+
+
+def configure_ambertools_env(env: dict | None = None) -> dict:
+    """Set AMBERHOME/PATH so OpenFF can run AM1-BCC via conda-forge ambertools."""
+    target = env if env is not None else os.environ
+    prefix = _conda_env_with_antechamber(target)
+    if not prefix:
+        return target
+    amber_bin = Path(prefix) / "bin" / "antechamber"
+    if not amber_bin.exists():
+        return target
+    target.setdefault("AMBERHOME", prefix)
+    bin_dir = str(amber_bin.parent)
+    path = target.get("PATH", "")
+    if bin_dir not in path.split(os.pathsep):
+        target["PATH"] = bin_dir + (os.pathsep + path if path else "")
+    return target
+
+
+def ensure_openff_ambertools_registered() -> None:
+    """Register AmberTools with OpenFF so GAFFTemplateGenerator can assign AM1-BCC."""
+    configure_ambertools_env()
+    try:
+        from openff.toolkit.utils import GLOBAL_TOOLKIT_REGISTRY
+        from openff.toolkit.utils.toolkits import AmberToolsToolkitWrapper
+    except ImportError:
+        return
+    for toolkit in GLOBAL_TOOLKIT_REGISTRY.registered_toolkits:
+        if toolkit.__class__.__name__ == "AmberToolsToolkitWrapper":
+            return
+    if not AmberToolsToolkitWrapper.is_available():
+        return
+    GLOBAL_TOOLKIT_REGISTRY.register_toolkit(AmberToolsToolkitWrapper())
+
+
+def openmm_subprocess_env(parallel_cases: int = 1, base: dict | None = None) -> dict:
+    """Environment for OpenMM child processes (Stage 6 / MD).
+
+    Sets OPENMM_CPU_THREADS and pins BLAS/OpenMP thread pools to the same count so
+    NumPy/MKL does not spawn ~cpu_count() threads per process on shared hosts.
+    """
+    env = (base or os.environ).copy()
+    configure_ambertools_env(env)
+    threads = openmm_cpu_threads(parallel_cases)
+    t = str(threads)
+    env["OPENMM_CPU_THREADS"] = t
+    # PDBFixer / system build use implicit OpenMM; keep CPU. Equilibration sets platform explicitly.
+    env["OPENMM_DEFAULT_PLATFORM"] = "CPU"
+    env["OMP_NUM_THREADS"] = t
+    env["MKL_NUM_THREADS"] = t
+    env["OPENBLAS_NUM_THREADS"] = t
+    env["NUMEXPR_NUM_THREADS"] = t
+    env["VECLIB_MAXIMUM_THREADS"] = t
+    env["PYTHONUNBUFFERED"] = "1"
+    cuda_device = resolve_stage6_cuda_device()
+    if cuda_device is not None:
+        env["CUDA_VISIBLE_DEVICES"] = cuda_device
+    return env
+
+
+def apply_openmm_runtime_env(parallel_cases: int = 1) -> dict[str, str]:
+    """Apply openmm_subprocess_env to the current process (Stage 6/7 entrypoints)."""
+    env = openmm_subprocess_env(parallel_cases)
+    for key in (
+        "OPENMM_CPU_THREADS",
+        "OPENMM_DEFAULT_PLATFORM",
+        "OMP_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "OPENBLAS_NUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+        "VECLIB_MAXIMUM_THREADS",
+        "CUDA_VISIBLE_DEVICES",
+        "AMBERHOME",
+        "PATH",
+    ):
+        if key in env:
+            os.environ[key] = env[key]
+    return env
+
+
 def config_hash(payload: dict) -> str:
     encoded = json.dumps(payload, sort_keys=True, default=str).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
