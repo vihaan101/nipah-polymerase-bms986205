@@ -19,13 +19,17 @@ ARTIFACTS = [
     "Stages/Stage 3/data/expanded_library.csv",
     "Stages/Stage 3/data/filtered_library.csv",
     "Stages/Stage 3/results/resistance_screening_results.csv",
+    "Stages/Stage 3/results/library_100_mutation_ranked.csv",
+    "Stages/Stage 3/data/library_100_locked.csv",
     "Stages/data/lake/Broad_Repurposing_Hub.csv",
     "Stages/data/lake/Broad_Repurposing_Samples.csv",
     "Stages/Stage 4/results/verification/verification_results.csv",
+    "Stages/Stage 4/results/verification/lead_selection.json",
     "Stages/Stage 4/results/verification/ghost_clash_verdict.json",
     "Stages/Stage 4/results/verification/admet_results.csv",
     "Stages/Stage 5/results/stage5_verdict.json",
     "Stages/Stage 5/results/focused_100_seed_summary.csv",
+    "Stages/Stage 5/results/matrix/matrix_export_manifest.json",
 ]
 
 

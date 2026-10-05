@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-Stage 5 Runner -- executes all Stage 5 scripts in the correct order.
+Stage 5 Runner -- executes validation scripts in the correct order.
 
-Order:
-  1. verify_v3.py          -- multi-seed statistical validation (5 seeds x 4 conditions)
-  2. docking_engine_v3.py  -- rigid-vs-rigid multi-seed validation
+Default: focused locked-100 five-seed validation + MD pose matrix export.
+
+Legacy: verify_v3.py + docking_engine_v3.py under Legacy/ (--legacy).
 
 Usage:
-  python run_stage5.py                   # run all 2 steps
-  python run_stage5.py --step 1          # run only multi-seed verification
-  python run_stage5.py --step 2          # run only rigid validation
-  python run_stage5.py --focused-100     # run locked-100 focused validation
+  python run_stage5.py                   # focused-100 (default)
+  python run_stage5.py --legacy          # historical Stage 5 workflow
+  python run_stage5.py --step 1          # run only specific step(s)
 """
 
 import sys
@@ -20,9 +19,10 @@ import argparse
 from pathlib import Path
 
 STAGE5_DIR = Path(__file__).resolve().parent
+LEGACY_DIR = STAGE5_DIR / "Legacy"
 STAGE5_RESULTS = STAGE5_DIR / "results"
 
-STEPS = [
+LEGACY_STEPS = [
     {
         "step": 1,
         "name": "Multi-Seed Verification",
@@ -54,11 +54,18 @@ FOCUSED_100_STEPS = [
         "args": ["--resume"],
         "description": "Runs five-seed WT/W730A validation for frozen locked-100 finalists",
     },
+    {
+        "step": 3,
+        "name": "MD Pose Matrix Export",
+        "script": "export_md_pose_matrix.py",
+        "args": [],
+        "description": "Writes ERDRP/BMS seed-42 matrix PDBQT files for Stage 6",
+    },
 ]
 
 
-def run_step(step_info, python_exe):
-    script_path = STAGE5_DIR / step_info["script"]
+def run_step(step_info, python_exe, script_root: Path):
+    script_path = script_root / step_info["script"]
     if not script_path.exists():
         print(f"  ERROR: {script_path} not found")
         return False
@@ -67,7 +74,7 @@ def run_step(step_info, python_exe):
 
     print(f"\n{'='*70}")
     print(f"  STEP {step_info['step']}: {step_info['name']}")
-    print(f"  Script: {step_info['script']}")
+    print(f"  Script: {script_path}")
     print(f"  {step_info['description']}")
     print(f"{'='*70}\n")
 
@@ -85,15 +92,19 @@ def run_step(step_info, python_exe):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Stage 5 Runner: execute all reproducibility and validation scripts in order"
+        description="Stage 5 Runner: execute reproducibility and validation scripts in order"
     )
     parser.add_argument(
-        "--step", type=int, nargs="+", choices=[1, 2],
+        "--step", type=int, nargs="+", choices=[1, 2, 3],
         help="Run only specific step(s), e.g. --step 1"
     )
     parser.add_argument(
+        "--legacy", action="store_true",
+        help="Run historical Stage 5 workflow (Legacy/) instead of focused-100"
+    )
+    parser.add_argument(
         "--focused-100", action="store_true",
-        help="Run locked-100 focused validation instead of the historical Stage 5 workflow"
+        help="Explicit alias for the default focused-100 workflow (kept for compatibility)",
     )
     parser.add_argument(
         "--workers", type=int,
@@ -105,24 +116,34 @@ def main():
     )
     args = parser.parse_args()
 
-    active_steps = FOCUSED_100_STEPS if args.focused_100 else STEPS
-    if args.focused_100:
+    if args.legacy and args.focused_100:
+        print("ERROR: --legacy and --focused-100 are mutually exclusive", file=sys.stderr)
+        sys.exit(2)
+
+    active_steps = LEGACY_STEPS if args.legacy else FOCUSED_100_STEPS
+    script_root = LEGACY_DIR if args.legacy else STAGE5_DIR
+
+    if not args.legacy:
         for step in active_steps:
             if step["script"] == "run_focused_five_seed_validation.py":
                 if args.workers:
                     step["args"].extend(["--workers", str(args.workers)])
                 if args.vina_path:
                     step["args"].extend(["--vina-path", args.vina_path])
+            if step["script"] == "export_md_pose_matrix.py" and args.vina_path:
+                step["args"].extend(["--vina-path", args.vina_path])
 
-    steps_to_run = [s for s in active_steps if s["step"] in args.step] if args.step else active_steps
+    if args.step:
+        steps_to_run = [s for s in active_steps if s["step"] in args.step]
+    else:
+        steps_to_run = active_steps
 
-    # Ensure results directory exists
     STAGE5_RESULTS.mkdir(parents=True, exist_ok=True)
 
     python_exe = sys.executable
 
     print("=" * 70)
-    title = "Focused 100 Validation" if args.focused_100 else "Reproducibility & Adversarial Audit"
+    title = "Legacy Reproducibility Audit" if args.legacy else "Focused 100 Validation"
     print(f"  STAGE 5 EXECUTION -- {title}")
     print(f"  Steps to run: {[s['step'] for s in steps_to_run]}")
     print(f"  Python: {python_exe}")
@@ -133,7 +154,7 @@ def main():
     failed = 0
 
     for step_info in steps_to_run:
-        ok = run_step(step_info, python_exe)
+        ok = run_step(step_info, python_exe, script_root)
         if ok:
             passed += 1
         else:

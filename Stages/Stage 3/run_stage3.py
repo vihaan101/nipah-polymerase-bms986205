@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
 """
-Stage 3 Runner — executes the Stage 3 library screening pipeline in order.
+Stage 3 Runner — executes the library screening pipeline in order.
 
-Order:
-  1. select_expanded_library_v2.py  — assemble Broad Hub library + MaxMin diversity pick (50 compounds)
-  2. select_library_v2.py           — Lipinski drug-likeness pre-filter (bRo5 caps)
-  3. screen_library_v2.py           — SMILES→PDBQT, dual-receptor docking, ghost clash, filtering
+Default: locked 100-compound workflow (audit → library → WT screen → paired screen).
 
-Note: pipeline_v2.py is a single-ligand diagnostic CLI tool and is NOT part of
-the batch pipeline. Run it separately with: python pipeline_v2.py <ligand.pdbqt>
+Legacy 50-compound path lives under Legacy/ and is selected with --legacy.
 
 Usage:
-  python run_stage3.py                   # run all 3 steps
-  python run_stage3.py --step 1          # run only library assembly
-  python run_stage3.py --step 2 3        # run only filter + screen
-  python run_stage3.py --from-step 2     # run from filtering onward
-  python run_stage3.py --locked-100      # run the locked 100-compound workflow
+  python run_stage3.py                   # locked-100 (default)
+  python run_stage3.py --legacy          # historical 3-step workflow
+  python run_stage3.py --list            # print active step scripts
+  python run_stage3.py --step 2          # run specific locked-100 step(s)
 """
 
 import sys
@@ -25,8 +20,9 @@ import argparse
 from pathlib import Path
 
 STAGE3_DIR = Path(__file__).resolve().parent
+LEGACY_DIR = STAGE3_DIR / "Legacy"
 
-STEPS = [
+LEGACY_STEPS = [
     {
         "step": 1,
         "name": "Library Assembly + Diversity Selection",
@@ -46,7 +42,7 @@ STEPS = [
         "name": "Batch Screening Pipeline",
         "script": "screen_library_v2.py",
         "args": [],
-        "description": "SMILES->PDBQT (MMFF minimized, pH 7.4), rigid-rigid docking, ghost clash + allosteric distance filtering",
+        "description": "SMILES->PDBQT, rigid-rigid docking, ghost clash + allosteric distance filtering",
     },
 ]
 
@@ -82,9 +78,9 @@ LOCKED_100_STEPS = [
 ]
 
 
-def run_step(step_info, python_exe):
+def run_step(step_info, python_exe, script_root: Path):
     """Runs a single Stage 3 step as a subprocess."""
-    script_path = STAGE3_DIR / step_info["script"]
+    script_path = script_root / step_info["script"]
     if not script_path.exists():
         print(f"  ERROR: {script_path} not found")
         return False
@@ -93,7 +89,7 @@ def run_step(step_info, python_exe):
 
     print(f"\n{'='*70}")
     print(f"  STEP {step_info['step']}: {step_info['name']}")
-    print(f"  Script: {step_info['script']}")
+    print(f"  Script: {script_path}")
     print(f"  {step_info['description']}")
     print(f"{'='*70}\n")
 
@@ -122,8 +118,12 @@ def main():
         help="Run from this step onward, e.g. --from-step 2 runs steps 2 and 3"
     )
     parser.add_argument(
-        "--locked-100", action="store_true",
-        help="Run the locked 100-compound workflow instead of the historical Stage 3 workflow"
+        "--legacy", action="store_true",
+        help="Run the historical 50-compound Legacy workflow instead of locked-100"
+    )
+    parser.add_argument(
+        "--list", action="store_true",
+        help="List step numbers and scripts for the active workflow, then exit"
     )
     parser.add_argument(
         "--workers", type=int,
@@ -135,15 +135,23 @@ def main():
     )
     args = parser.parse_args()
 
-    # Determine which steps to run
-    active_steps = LOCKED_100_STEPS if args.locked_100 else STEPS
-    if args.locked_100:
+    active_steps = LEGACY_STEPS if args.legacy else LOCKED_100_STEPS
+    script_root = LEGACY_DIR if args.legacy else STAGE3_DIR
+
+    if not args.legacy:
         for step in active_steps:
             if step["script"] == "screen_library_100.py":
                 if args.workers:
                     step["args"].extend(["--workers", str(args.workers)])
                 if args.vina_path:
                     step["args"].extend(["--vina-path", args.vina_path])
+
+    if args.list:
+        mode = "legacy" if args.legacy else "locked-100"
+        print(f"Stage 3 workflow: {mode} (scripts under {script_root})")
+        for step in active_steps:
+            print(f"  {step['step']}: {step['script']} — {step['name']}")
+        sys.exit(0)
 
     if args.step:
         steps_to_run = [s for s in active_steps if s["step"] in args.step]
@@ -155,7 +163,7 @@ def main():
     python_exe = sys.executable
 
     print("=" * 70)
-    title = "Locked 100-Compound Screening" if args.locked_100 else "Ligand Library Preparation & Primary Screening"
+    title = "Legacy 50-Compound Screening" if args.legacy else "Locked 100-Compound Screening"
     print(f"  STAGE 3 EXECUTION — {title}")
     print(f"  Steps to run: {[s['step'] for s in steps_to_run]}")
     print(f"  Python: {python_exe}")
@@ -166,7 +174,7 @@ def main():
     failed = 0
 
     for step_info in steps_to_run:
-        ok = run_step(step_info, python_exe)
+        ok = run_step(step_info, python_exe, script_root)
         if ok:
             passed += 1
         else:

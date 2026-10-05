@@ -1,4 +1,5 @@
 
+import argparse
 import sys
 import json
 import numpy as np
@@ -13,7 +14,8 @@ STAGE2_DIR = PROJECT_ROOT / "Stages" / "Stage 2"
 STAGE4_DIR = PROJECT_ROOT / "Stages" / "Stage 4"
 
 WT_STRUCTURE = STAGE1_DIR / "data" / "9KNZ_clean.pdb"
-DOCKED_LIGAND = STAGE2_DIR / "results" / "verification" / "BMS-986205_rigid_mut.pdbqt"
+DEFAULT_DOCKED_LIGAND = STAGE2_DIR / "results" / "verification" / "BMS-986205_rigid_mut.pdbqt"
+LEAD_MANIFEST = STAGE4_DIR / "results" / "verification" / "lead_selection.json"
 
 def get_ghost_atoms(wt_pdb, chain_id="A", res_id=730):
     """Get coordinates of the deleted sidechain atoms (Ghost)"""
@@ -61,7 +63,42 @@ def get_ligand_coords(pdbqt_file):
                     pass
     return np.array(coords)
 
+def resolve_ligand_path(args) -> Path:
+    if args.ligand:
+        return Path(args.ligand)
+    if args.use_lead_manifest and LEAD_MANIFEST.exists():
+        manifest = json.loads(LEAD_MANIFEST.read_text())
+        key = "pose_path_mut" if args.receptor == "mut" else "pose_path_wt"
+        value = manifest.get(key) or manifest.get("pose_path")
+        if value:
+            candidate = Path(value)
+            if not candidate.is_absolute():
+                candidate = STAGE4_DIR / "results" / "verification" / candidate
+                if not candidate.exists():
+                    candidate = PROJECT_ROOT / value
+            return candidate
+    return DEFAULT_DOCKED_LIGAND
+
+
 def main():
+    parser = argparse.ArgumentParser(description="Ghost clash verification for docked lead pose")
+    parser.add_argument("--ligand", type=Path, help="Docked ligand PDBQT (MODEL 1) to check")
+    parser.add_argument(
+        "--use-lead-manifest",
+        action="store_true",
+        default=True,
+        help="Resolve ligand from Stage 4 lead_selection.json when --ligand omitted",
+    )
+    parser.add_argument(
+        "--receptor",
+        choices=("mut", "wt"),
+        default="mut",
+        help="Which manifest pose to use when resolving from lead_selection.json",
+    )
+    args = parser.parse_args()
+
+    docked_ligand = resolve_ligand_path(args)
+
     print("=== Ghost Clash Verification (Vacuum Hole Check) ===")
 
     # FAIL-5: fail-loud on missing WT structure
@@ -74,12 +111,12 @@ def main():
     print(f"Ghost Residue (W730) Atoms: {len(ghost_coords)}")
 
     # FAIL-5: fail-loud on missing docked ligand
-    if not DOCKED_LIGAND.exists():
-        print(f"FATAL: Docked ligand not found at {DOCKED_LIGAND}", file=sys.stderr)
+    if not docked_ligand.exists():
+        print(f"FATAL: Docked ligand not found at {docked_ligand}", file=sys.stderr)
         sys.exit(1)
 
     # 2. Get Docked Ligand Coordinates (in Mutant)
-    ligand_coords = get_ligand_coords(DOCKED_LIGAND)
+    ligand_coords = get_ligand_coords(docked_ligand)
     print(f"Ligand Atoms: {len(ligand_coords)}")
 
     # 3. Calculate Clashes

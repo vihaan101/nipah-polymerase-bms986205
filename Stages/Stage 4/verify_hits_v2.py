@@ -12,8 +12,15 @@ from multiprocessing import Pool, cpu_count
 from Bio.PDB import PDBParser
 from scipy.spatial import distance
 
-# Paths — FAIL-1: canonical project root resolution
+import argparse
+
+# Paths — canonical project root resolution
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+COMMON_DIR = PROJECT_ROOT / "Stages" / "common"
+sys.path.insert(0, str(COMMON_DIR))
+from paths import project_root as _project_root  # noqa: E402
+
+PROJECT_ROOT = _project_root()
 STAGE1_DIR = PROJECT_ROOT / "Stages" / "Stage 1"
 STAGE3_DIR = PROJECT_ROOT / "Stages" / "Stage 3"
 STAGE4_DIR = PROJECT_ROOT / "Stages" / "Stage 4"
@@ -34,9 +41,11 @@ if not _box_path.exists():
 with open(_box_path) as f:
     BOX_CONFIG = json.load(f)
 
-# FAIL-2: canonical Stage 3 input contract
-INPUT_CSV = STAGE3_DIR / "results" / "resistance_screening_results.csv"
-LIGANDS_DIR = STAGE3_DIR / "data" / "ligands"
+# FAIL-2: canonical Stage 3 input contract (overridden by CLI)
+DEFAULT_INPUT_CSV = STAGE3_DIR / "results" / "resistance_screening_results.csv"
+DEFAULT_LIGANDS_DIR = STAGE3_DIR / "data" / "ligands"
+LIBRARY_100_INPUT_CSV = STAGE3_DIR / "results" / "library_100_mutation_ranked.csv"
+LIBRARY_100_LIGANDS_DIR = STAGE3_DIR / "data" / "library_100_ligands"
 
 # FAIL-3: canonical Stage 1 receptor paths — rigid-rigid only, no flex
 WT_RECEPTOR = STAGE1_DIR / "data" / "9KNZ_clean.pdbqt"
@@ -132,10 +141,15 @@ def parse_affinity(pdbqt_file):
                 return float(line.split()[3])
     return None
 
-def verify_compound(row):
+def verify_compound(payload):
+    row, ligands_dir = payload
     start_t = time.time()
-    name = row['name']
-    ligand_pdbqt = LIGANDS_DIR / f"{name}.pdbqt"
+    name = row["name"]
+    library_id = row.get("library_id")
+    if library_id and str(library_id).strip():
+        ligand_pdbqt = ligands_dir / f"{library_id}.pdbqt"
+    else:
+        ligand_pdbqt = ligands_dir / f"{name}.pdbqt"
 
     if not ligand_pdbqt.exists():
         return {"name": name, "error": "Ligand file missing", "time": 0}
@@ -174,33 +188,63 @@ def verify_compound(row):
     }
 
 # FAIL-8: lead selection handoff
-def publish_lead(name: str, pose_src: Path):
-    """Publish the selected lead's verification pose for Stage 5 consumption."""
+def publish_lead(name: str, pose_src_wt: Path, pose_src_mut: Path):
+    """Publish WT/MUT verification poses for Stage 5/6 consumption."""
     DOWNSTREAM_HANDOFF.mkdir(parents=True, exist_ok=True)
-    pose_dst = DOWNSTREAM_HANDOFF / f"{name}_best_pose.pdbqt"
-    if pose_dst.exists():
-        pose_dst.unlink()  # Delete stale handoff
-    shutil.copy2(pose_src, pose_dst)
+    pose_dst_wt = DOWNSTREAM_HANDOFF / f"{name}_best_pose.pdbqt"
+    if pose_dst_wt.exists():
+        pose_dst_wt.unlink()
+    shutil.copy2(pose_src_wt, pose_dst_wt)
+
+    pose_rel_wt = RESULTS_DIR / f"{name}_rigid_wt.pdbqt"
+    pose_rel_mut = RESULTS_DIR / f"{name}_rigid_mut.pdbqt"
+    if not pose_rel_wt.exists():
+        shutil.copy2(pose_src_wt, pose_rel_wt)
+    if not pose_rel_mut.exists():
+        shutil.copy2(pose_src_mut, pose_rel_mut)
+
     manifest = {
         "lead_name": name,
-        "pose_path": str(pose_dst),
+        "pose_path": str(pose_dst_wt),
+        "pose_path_wt": str(pose_rel_wt.relative_to(STAGE4_DIR / "results" / "verification")),
+        "pose_path_mut": str(pose_rel_mut.relative_to(STAGE4_DIR / "results" / "verification")),
         "verification_csv": str(RESULTS_DIR / "verification_results.csv"),
         "admet_csv": str(RESULTS_DIR / "admet_results.csv"),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
     with open(LEAD_MANIFEST, "w") as fh:
         json.dump(manifest, fh, indent=2)
-    print(f"Lead selection published: {name} -> {pose_dst}")
+    print(f"Lead selection published: {name} -> WT {pose_dst_wt} (MD uses WT pose for C_BMS_WT)")
 
 def main():
-    # FAIL-2: Stage 3 input contract validation
+    parser = argparse.ArgumentParser(description="Stage 4 multi-filter hit verification")
+    parser.add_argument(
+        "--input-csv",
+        type=Path,
+        default=None,
+        help="Screening results CSV (default: legacy resistance_screening_results.csv)",
+    )
+    parser.add_argument(
+        "--library-100",
+        action="store_true",
+        help="Use locked-100 ranked CSV and library_100_ligands PDBQT paths",
+    )
+    args = parser.parse_args()
+
+    if args.library_100:
+        input_csv = args.input_csv or LIBRARY_100_INPUT_CSV
+        ligands_dir = LIBRARY_100_LIGANDS_DIR
+    else:
+        input_csv = args.input_csv or DEFAULT_INPUT_CSV
+        ligands_dir = DEFAULT_LIGANDS_DIR
+
     print("=== Stage 4: Multi-Filter Verification ===")
-    if not INPUT_CSV.exists():
-        print(f"FATAL: Stage 3 results not found at {INPUT_CSV}", file=sys.stderr)
+    if not input_csv.exists():
+        print(f"FATAL: Stage 3 results not found at {input_csv}", file=sys.stderr)
         sys.exit(1)
-    df = pd.read_csv(INPUT_CSV)
+    df = pd.read_csv(input_csv)
     if df.empty:
-        print(f"FATAL: Stage 3 results are empty at {INPUT_CSV}", file=sys.stderr)
+        print(f"FATAL: Stage 3 results are empty at {input_csv}", file=sys.stderr)
         sys.exit(1)
     required_cols = {"name", "wt_affinity", "mut_affinity", "delta_affinity",
                      "delta_dist", "ghost_clash_dist", "ghost_clash"}
@@ -220,8 +264,9 @@ def main():
     print(f"Starting verification of {len(hits)} compounds...")
     start_total = time.time()
 
+    payloads = [(row, ligands_dir) for _, row in hits.iterrows()]
     with Pool(cpu_count()) as p:
-        results = p.map(verify_compound, [row for _, row in hits.iterrows()])
+        results = p.map(verify_compound, payloads)
 
     end_total = time.time()
     total_time = end_total - start_total
@@ -260,12 +305,16 @@ def main():
             final_hits.to_csv(RESULTS_DIR / "confirmed_hits.csv", index=False)
             # FAIL-8: Lead selection — strongest WT affinity wins
             best = final_hits.loc[final_hits['wt_affinity'].idxmin()]
-            best_name = best['name']
-            best_pose = RESULTS_DIR / f"{best_name}_rigid_mut.pdbqt"
-            if best_pose.exists():
-                publish_lead(best_name, best_pose)
+            best_name = best["name"]
+            best_pose_wt = RESULTS_DIR / f"{best_name}_rigid_wt.pdbqt"
+            best_pose_mut = RESULTS_DIR / f"{best_name}_rigid_mut.pdbqt"
+            if best_pose_wt.exists() and best_pose_mut.exists():
+                publish_lead(best_name, best_pose_wt, best_pose_mut)
             else:
-                print(f"WARNING: Verified pose not found for {best_name} at {best_pose}")
+                print(
+                    f"WARNING: Verified poses not found for {best_name} "
+                    f"(wt={best_pose_wt}, mut={best_pose_mut})"
+                )
         else:
             print("No confirmed hits met all five filter criteria.")
 
