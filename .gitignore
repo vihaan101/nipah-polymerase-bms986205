@@ -21,13 +21,41 @@ scripts/azure/.infra_env
 reports/
 Journals/
 
+# Manuscript / artwork (local only; not versioned)
+Stages/Journal Content/
+
+# Deprecated stage workflows and legacy input snapshots
+Stages/**/Legacy/
+Stages/**/data/_legacy/
+
+# Stage pipeline outputs (Stage */data/ inputs and Python entrypoints stay tracked)
+Stages/Stage */results/
+Stages/Stage 2/verification_logs/
+stage7_50ns_direct/
+Stages/Stage 7/eval_results_*/
+Stages/Stage 3/data/library_100_diagnostics.csv
+Stages/Stage 3/data/library_100_failures.csv
+Stages/logs/
+Stages/.cursor/
+Stages/compute.txt
+
+# Shell runners (local only — use Python entrypoints)
+Stages/**/*.sh
+
+# Markdown notes (local only)
+Stages/**/*.md
+
+# Local ops / test pin lists (not versioned)
+Stages/requirements-test.txt
+Stages/scripts/rsync_*_exclude.txt
+
 # Runtime logs can contain expanded shell commands or environment-derived paths
 *.log
 worker_*.log
 eval_vm.log
 
-# Upload/automation scripts and state (not part of reproducible workflow)
-scripts/
+# Upload/automation scripts at repo root only (Stages Python code is tracked)
+/scripts/
 zenodo_draft_ids.json
 zenodo_upload_state.json
 

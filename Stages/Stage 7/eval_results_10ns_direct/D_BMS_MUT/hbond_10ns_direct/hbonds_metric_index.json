@@ -1,6 +1,0 @@
-{
-  "metric_name": "hbonds",
-  "case_summaries": {
-    "D_BMS_MUT": "<azure-workspace>/Stages/Stage 7/hbond_10ns_direct/D_BMS_MUT_hbonds_summary.json"
-  }
-}
