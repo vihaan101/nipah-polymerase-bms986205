@@ -27,6 +27,7 @@ from docking_utils import (  # noqa: E402
     run_vina_command,
     sha256_file,
     valid_output,
+    resolve_dock_workers,
     validate_workers,
     vina_version,
     write_output_meta,
@@ -147,7 +148,12 @@ def main() -> None:
     parser.add_argument("--candidates", type=Path, default=STAGE5_RESULTS / "focused_100_validation_candidates.csv")
     parser.add_argument("--comparator-manifest", type=Path, default=STAGE5_RESULTS / "focused_100_comparator_manifest.json")
     parser.add_argument("--vina-path", type=Path)
-    parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=None,
+        help="Parallel Vina jobs (default: 1, or NIPAH_DOCK_WORKERS / NIPAH_AUTO_PARALLEL=1)",
+    )
     parser.add_argument("--seeds", type=int, nargs="+", default=DEFAULT_SEEDS)
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
@@ -175,7 +181,7 @@ def main() -> None:
 
     successes = []
     failures = []
-    workers = validate_workers(args.workers)
+    workers = resolve_dock_workers(args.workers)
     with ProcessPoolExecutor(max_workers=workers) as executor:
         futures = [executor.submit(_job, job) for job in jobs]
         for future in as_completed(futures):

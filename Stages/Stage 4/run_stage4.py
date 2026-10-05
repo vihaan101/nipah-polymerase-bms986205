@@ -8,7 +8,8 @@ Order:
   3. verify_ghost_clash_v2.py -- standalone ghost clash diagnostic (independent check)
 
 Usage:
-  python run_stage4.py                   # run all 3 steps
+  python run_stage4.py                   # run all 3 steps (verify uses --library-100)
+  python run_stage4.py --legacy          # step 1 without --library-100 (legacy CSV)
   python run_stage4.py --step 1          # run only verification
   python run_stage4.py --step 2 3        # run only ADMET + ghost clash
 """
@@ -26,7 +27,7 @@ STEPS = [
         "step": 1,
         "name": "Multi-Filter Verification",
         "script": "verify_hits_v2.py",
-        "args": [],
+        "args": ["--library-100"],
         "description": "5-gate filter cascade: potency, resilience, allosteric distance, pose stability, ghost clash",
     },
     {
@@ -80,9 +81,19 @@ def main():
         "--step", type=int, nargs="+", choices=[1, 2, 3],
         help="Run only specific step(s), e.g. --step 1 2"
     )
+    parser.add_argument(
+        "--legacy", action="store_true",
+        help="Step 1: omit --library-100 (legacy Stage 3 CSV/ligands)",
+    )
     args = parser.parse_args()
 
     steps_to_run = [s for s in STEPS if s["step"] in args.step] if args.step else STEPS
+    if args.legacy:
+        steps_to_run = [
+            {**s, "args": [a for a in s["args"] if a != "--library-100"]}
+            if s["step"] == 1 else s
+            for s in steps_to_run
+        ]
 
     python_exe = sys.executable
 

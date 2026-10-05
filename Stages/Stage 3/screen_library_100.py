@@ -28,6 +28,7 @@ from docking_utils import (  # noqa: E402
     run_vina_command,
     sha256_file,
     valid_output,
+    resolve_dock_workers,
     validate_workers,
     vina_version,
     write_output_meta,
@@ -214,7 +215,7 @@ def selection_reason(row: pd.Series, top_ids: set[str], threshold: float) -> str
 def run_wt(args: argparse.Namespace, run_config: dict) -> None:
     STAGE3_RESULTS.mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(args.library)
-    workers = validate_workers(args.workers)
+    workers = resolve_dock_workers(args.workers)
     payloads = [(row.to_dict(), run_config, str(STAGE3_RESULTS), args.resume) for _, row in df.iterrows()]
     rows = []
     failures = []
@@ -311,7 +312,7 @@ def carry_forward_rows(args: argparse.Namespace) -> pd.DataFrame:
 def run_paired(args: argparse.Namespace, run_config: dict) -> None:
     STAGE3_RESULTS.mkdir(parents=True, exist_ok=True)
     df = carry_forward_rows(args)
-    workers = validate_workers(args.workers)
+    workers = resolve_dock_workers(args.workers)
     payloads = [(row.to_dict(), run_config, str(STAGE3_RESULTS), args.resume) for _, row in df.iterrows()]
     rows = []
     failures = []
@@ -374,7 +375,12 @@ def main() -> None:
     parser.add_argument("--library", type=Path, default=LOCKED_LIBRARY)
     parser.add_argument("--wt-results", type=Path, default=STAGE3_RESULTS / "library_100_wt_ranked.csv")
     parser.add_argument("--vina-path", type=Path)
-    parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=None,
+        help="Parallel Vina jobs (default: 1, or NIPAH_DOCK_WORKERS / NIPAH_AUTO_PARALLEL=1)",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--wt-threshold", type=float, default=-8.0)
     parser.add_argument("--resume", action="store_true")
