@@ -10,10 +10,21 @@ Follows the "True Scratch" protocol:
 
 import os
 import sys
+from pathlib import Path
+
+# Register AmberTools for AM1-BCC before any openff.toolkit import.
+STAGE6_DIR = Path(__file__).resolve().parent
+_COMMON_DIR = STAGE6_DIR.parent / "common"
+if str(_COMMON_DIR) not in sys.path:
+    sys.path.insert(0, str(_COMMON_DIR))
+from docking_utils import ensure_openff_ambertools_registered, create_openmm_simulation  # noqa: E402
+
+ensure_openff_ambertools_registered()
+
 import json
 import shutil
+import time
 import numpy as np
-from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import openmm as mm
@@ -27,10 +38,30 @@ from openff.toolkit.topology import Molecule
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 STAGE1_DIR = PROJECT_ROOT / "Stages" / "Stage 1"
 STAGE4_DIR = PROJECT_ROOT / "Stages" / "Stage 4"
-STAGE6_DIR = Path(__file__).resolve().parent
 RESULTS_DIR = STAGE6_DIR / "results"
 
 LEAD_MANIFEST = STAGE4_DIR / "results" / "verification" / "lead_selection.json"
+
+_AGENT_DEBUG_LOG = STAGE6_DIR.parent / ".cursor" / "debug-4ef46a.log"
+
+
+def _agent_debug_log(location: str, message: str, data: dict, hypothesis_id: str) -> None:
+    # #region agent log
+    payload = {
+        "sessionId": "4ef46a",
+        "timestamp": int(time.time() * 1000),
+        "location": location,
+        "message": message,
+        "data": data,
+        "hypothesisId": hypothesis_id,
+    }
+    try:
+        with open(_AGENT_DEBUG_LOG, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(payload) + "\n")
+    except OSError:
+        pass
+    # #endregion
+
 
 STD_RESIDUES = frozenset([
     'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE',
@@ -46,8 +77,22 @@ def require_file(path: Path, label: str) -> Path:
         raise RuntimeError(f"Stage 6 contract violation: {label} is empty at {path}")
     return path
 
-def load_lead_pose() -> Path:
-    """Resolve the BMS-986205 pose via the Stage 4 lead-selection manifest."""
+def _resolve_manifest_pose(manifest: dict, key: str, label: str) -> Path:
+    pose_value = manifest.get(key) or manifest.get("pose_path")
+    if not pose_value:
+        raise RuntimeError(f"Stage 6 contract violation: manifest missing '{key}'")
+    pose_path = Path(pose_value)
+    if not pose_path.is_absolute():
+        candidate = STAGE4_DIR / "results" / "verification" / pose_path
+        if candidate.exists():
+            pose_path = candidate
+        else:
+            pose_path = PROJECT_ROOT / pose_value
+    return require_file(pose_path, label)
+
+
+def load_lead_pose_wt() -> Path:
+    """BMS WT MD pose (rigid WT dock) from Stage 4 lead manifest."""
     require_file(LEAD_MANIFEST, "Stage 4 lead-selection manifest")
     with open(LEAD_MANIFEST) as fh:
         manifest = json.load(fh)
@@ -56,13 +101,20 @@ def load_lead_pose() -> Path:
             f"Stage 6 contract violation: expected lead BMS-986205, "
             f"got {manifest.get('lead_name')!r}"
         )
-    pose_value = manifest.get("pose_path")
-    if not pose_value:
-        raise RuntimeError("Stage 6 contract violation: manifest missing 'pose_path'")
-    pose_path = Path(pose_value)
-    if not pose_path.is_absolute():
-        pose_path = PROJECT_ROOT / pose_path
-    return require_file(pose_path, "Stage 4 selected best pose")
+    return _resolve_manifest_pose(manifest, "pose_path_wt", "Stage 4 BMS WT pose")
+
+
+def load_lead_pose_mut() -> Path:
+    """BMS MUT MD pose (rigid MUT dock) from Stage 4 lead manifest."""
+    require_file(LEAD_MANIFEST, "Stage 4 lead-selection manifest")
+    with open(LEAD_MANIFEST) as fh:
+        manifest = json.load(fh)
+    if manifest.get("lead_name") != "BMS-986205":
+        raise RuntimeError(
+            f"Stage 6 contract violation: expected lead BMS-986205, "
+            f"got {manifest.get('lead_name')!r}"
+        )
+    return _resolve_manifest_pose(manifest, "pose_path_mut", "Stage 4 BMS MUT pose")
 
 # Configuration - all paths absolutely anchored
 RAW_RECEPTOR_PDB = require_file(
@@ -113,7 +165,7 @@ CASES = [
         "drug": "BMS-986205",
         "receptor": "WT",
         "smiles": BMS_SMILES,
-        "pose_pdbqt": load_lead_pose(),
+        "pose_pdbqt": load_lead_pose_wt(),
         "apply_mutation": False,
     },
     {
@@ -122,10 +174,7 @@ CASES = [
         "drug": "BMS-986205",
         "receptor": "W730A",
         "smiles": BMS_SMILES,
-        "pose_pdbqt": require_file(
-            STAGE5_MATRIX / "BMS_MUT_seed_42.pdbqt",
-            "Stage 5 BMS MUT seed-42 pose"
-        ),
+        "pose_pdbqt": load_lead_pose_mut(),
         "apply_mutation": True,
     },
 ]
@@ -412,12 +461,54 @@ def prepare_protein_and_build_system(raw_pdb_path, ligand_sdf_path,
     
     return system, modeller.topology, modeller.positions
 
+
+def _md_steps_with_progress(simulation, total_steps: int, label: str, chunk: int = 5000) -> float:
+    """Run MD in chunks; log progress (stdout + agent debug). Returns wall seconds."""
+    t0 = time.perf_counter()
+    done = 0
+    while done < total_steps:
+        n = min(chunk, total_steps - done)
+        simulation.step(n)
+        done += n
+        elapsed = time.perf_counter() - t0
+        ms_per_step = (elapsed / done) * 1000.0 if done else 0.0
+        eta_h = (total_steps - done) * (elapsed / done) / 3600.0 if done else 0.0
+        msg = (
+            f"      {label}: {done}/{total_steps} steps "
+            f"({elapsed:.0f}s elapsed, ~{ms_per_step:.1f} ms/step, ETA ~{eta_h:.1f}h)"
+        )
+        print(msg, flush=True)
+        _agent_debug_log(
+            "reconstruct_system_from_scratch_v2.py:_md_steps_with_progress",
+            label,
+            {
+                "done": done,
+                "total_steps": total_steps,
+                "elapsed_s": round(elapsed, 2),
+                "ms_per_step": round(ms_per_step, 3),
+                "eta_hours": round(eta_h, 2),
+                "openmm_cpu_threads": os.environ.get("OPENMM_CPU_THREADS"),
+                "platform": simulation.context.getPlatform().getName(),
+            },
+            "H3",
+        )
+    return time.perf_counter() - t0
+
+
 def minimize_and_equilibrate(system, topology, positions, results_dir):
     """
     Full minimization + NVT + NPT equilibration protocol.
     Returns dict of output artifact paths.
     """
-    print("[3/4] Minimization & Equilibration...")
+    print("[3/4] Minimization & Equilibration...", flush=True)
+    n_atoms = topology.getNumAtoms()
+    openmm_threads = os.environ.get("OPENMM_CPU_THREADS", "?")
+    _agent_debug_log(
+        "reconstruct_system_from_scratch_v2.py:minimize_and_equilibrate",
+        "equilibration_start",
+        {"n_atoms": n_atoms, "openmm_cpu_threads": openmm_threads},
+        "H3",
+    )
 
     # --- Add positional restraints BEFORE creating Simulation ---
     force = mm.CustomExternalForce("k*periodicdistance(x, y, z, x0, y0, z0)^2")
@@ -440,22 +531,44 @@ def minimize_and_equilibrate(system, topology, positions, results_dir):
     system.addForce(force)
     print(f"      Restrained {restrained_count} atoms (backbone + ligand heavy).")
 
-    # --- Create Simulation ---
-    integrator = mm.LangevinMiddleIntegrator(
-        300 * unit.kelvin, 1.0 / unit.picoseconds, 2.0 * unit.femtoseconds
-    )
-    simulation = app.Simulation(topology, system, integrator)
+    # --- Create Simulation (CUDA on GPU nodes, same as Stage 7 production) ---
+    def _integrator():
+        return mm.LangevinMiddleIntegrator(
+            300 * unit.kelvin, 1.0 / unit.picoseconds, 2.0 * unit.femtoseconds
+        )
+
+    simulation, platform_name = create_openmm_simulation(topology, system, _integrator)
     simulation.context.setPositions(positions)
+    print(
+        f"      OpenMM platform: {platform_name} "
+        f"(OPENMM_DEFAULT_PLATFORM={os.environ.get('OPENMM_DEFAULT_PLATFORM', '?')}, "
+        f"OPENMM_CPU_THREADS={openmm_threads})",
+        flush=True,
+    )
+    _agent_debug_log(
+        "reconstruct_system_from_scratch_v2.py:minimize_and_equilibrate",
+        "simulation_created",
+        {"platform": platform_name, "n_atoms": n_atoms},
+        "H6",
+    )
 
     # --- Minimize ---
-    print("      Minimizing energy...")
+    print("      Minimizing energy...", flush=True)
+    t_min = time.perf_counter()
     simulation.minimizeEnergy()
+    min_elapsed = time.perf_counter() - t_min
     min_state = simulation.context.getState(getEnergy=True)
-    print(f"      Minimized. PE = {min_state.getPotentialEnergy()}")
+    print(f"      Minimized in {min_elapsed:.0f}s. PE = {min_state.getPotentialEnergy()}", flush=True)
+    _agent_debug_log(
+        "reconstruct_system_from_scratch_v2.py:minimize_and_equilibrate",
+        "minimize_done",
+        {"elapsed_s": round(min_elapsed, 2), "platform": platform_name},
+        "H3",
+    )
 
     # --- NVT Equilibration (100 ps, no barostat) ---
-    print("      Running NVT Equilibration (100 ps, Restrained)...")
-    simulation.step(50000)  # 50000 * 2 fs = 100 ps, true NVT
+    print("      Running NVT Equilibration (100 ps, Restrained)...", flush=True)
+    _md_steps_with_progress(simulation, 50000, "NVT")
 
     # --- Add barostat for NPT phase ---
     print("      Adding MonteCarloBarostat for NPT phase...")
@@ -466,8 +579,8 @@ def minimize_and_equilibrate(system, topology, positions, results_dir):
     simulation.context.reinitialize(preserveState=True)
 
     # --- NPT Equilibration (200 ps) ---
-    print("      Running NPT Equilibration (200 ps, Restrained)...")
-    simulation.step(100000)  # 100000 * 2 fs = 200 ps, true NPT
+    print("      Running NPT Equilibration (200 ps, Restrained)...", flush=True)
+    _md_steps_with_progress(simulation, 100000, "NPT")
 
     # --- Save outputs ---
     results_dir_path = Path(results_dir)
