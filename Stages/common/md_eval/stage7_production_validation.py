@@ -120,7 +120,9 @@ def validate_trajectory(dcd_path, topology_path, tier_label, total_steps, dcd_in
         )
 
     expected_frames = total_steps // dcd_interval
-    expected_start, expected_end = TIER_TIME_RANGES[tier_label]
+    expected_start = TIER_TIME_RANGES.get(tier_label, (4.0, 0.0))[0]
+    # Last DCD frame time (2 fs/step, frame every dcd_interval steps)
+    expected_end = (total_steps // dcd_interval) * dcd_interval * 0.002
 
     print(f"\n  [H3] Validating trajectory for {tier_label}...")
     print(f"       Expected: {expected_frames} frames, {expected_start:.0f}-{expected_end:.0f} ps")
