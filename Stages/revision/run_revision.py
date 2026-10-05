@@ -19,7 +19,11 @@ _COMMON = Path(__file__).resolve().parents[1] / "common"
 if str(_COMMON) not in sys.path:
     sys.path.insert(0, str(_COMMON))
 
-from docking_utils import build_vina_command, load_docking_box  # noqa: E402
+from docking_utils import (  # noqa: E402
+    build_vina_command,
+    load_docking_box,
+    openmm_subprocess_env,
+)
 from md_eval.stage7_success_criteria import block_average, split_window_drift  # noqa: E402
 
 
@@ -103,7 +107,13 @@ def plan_md_queue(tasks: list[dict], sentinels: dict, n_gpus: int, parallel: int
     }
 
 
-def production_command(task: dict, resume: bool, results_root: Path | None = None, stage6_results: Path | None = None) -> list[str]:
+def production_command(
+    task: dict,
+    resume: bool,
+    results_root: Path | None = None,
+    stage6_results: Path | None = None,
+    s3_options: dict | None = None,
+) -> list[str]:
     command = [
         sys.executable,
         str(PRODUCTION_SCRIPT),
@@ -118,7 +128,34 @@ def production_command(task: dict, resume: bool, results_root: Path | None = Non
         command.extend(["--stage6-results", str(stage6_results)])
     if resume:
         command.append("--resume")
+    opts = s3_options or {}
+    if opts.get("archive_s3"):
+        command.append("--archive-s3")
+    if opts.get("s3_bucket"):
+        command.extend(["--s3-bucket", str(opts["s3_bucket"])])
+    if opts.get("s3_prefix"):
+        command.extend(["--s3-prefix", str(opts["s3_prefix"])])
+    if opts.get("s3_profile"):
+        command.extend(["--s3-profile", str(opts["s3_profile"])])
+    if opts.get("s3_region"):
+        command.extend(["--s3-region", str(opts["s3_region"])])
+    if opts.get("s3_delete_chk_above_mb") is not None:
+        command.extend(["--s3-delete-chk-above-mb", str(opts["s3_delete_chk_above_mb"])])
+    if opts.get("max_steps") is not None:
+        command.extend(["--max-steps", str(opts["max_steps"])])
     return command
+
+
+def _s3_options_from_args(args: argparse.Namespace) -> dict:
+    return {
+        "archive_s3": getattr(args, "archive_s3", False),
+        "s3_bucket": getattr(args, "s3_bucket", None),
+        "s3_prefix": getattr(args, "s3_prefix", None),
+        "s3_profile": getattr(args, "s3_profile", None),
+        "s3_region": getattr(args, "s3_region", None),
+        "s3_delete_chk_above_mb": getattr(args, "s3_delete_chk_above_mb", None),
+        "max_steps": getattr(args, "max_steps", None),
+    }
 
 
 def plan_cpu_wave(cases, cpu_count: int, parallel: int | None) -> dict:
@@ -204,7 +241,7 @@ class _PopenHandle:
 
 
 def _popen_md(task, command, log_path):
-    env = os.environ.copy()
+    env = openmm_subprocess_env(1, base=os.environ.copy())
     env["CUDA_VISIBLE_DEVICES"] = str(task["cuda_visible_devices"])
     path = Path(log_path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -225,6 +262,7 @@ def run_md_queue(
     log_dir: Path | None = None,
     start_mps=None,
     stop_mps=None,
+    s3_options: dict | None = None,
 ) -> dict:
     plan = plan_md_queue(tasks, sentinels, n_gpus, parallel)
     failed = []
@@ -234,7 +272,9 @@ def run_md_queue(
             mps_on = bool(start_mps())
         waiting = []
         for task in batch:
-            command = production_command(task, resume, results_root, stage6_results)
+            command = production_command(
+                task, resume, results_root, stage6_results, s3_options=s3_options
+            )
             log_path = None
             if log_dir is not None:
                 log_path = Path(log_dir) / f"{task['case']}_rep{task['replicate']}.log"
@@ -651,6 +691,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--all", action="store_true")
     parser.add_argument("--parallel", type=int, default=None)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--archive-s3",
+        action="store_true",
+        help="Upload production.dcd to S3 after each completed replicate.",
+    )
+    parser.add_argument("--s3-bucket", default=None)
+    parser.add_argument("--s3-prefix", default=None)
+    parser.add_argument("--s3-profile", default=None)
+    parser.add_argument("--s3-region", default=None)
+    parser.add_argument("--s3-delete-chk-above-mb", type=float, default=None)
+    parser.add_argument("--max-steps", type=int, default=None)
     return parser.parse_args(argv)
 
 
@@ -1276,6 +1327,7 @@ def main(
                 log_dir=repo / "Stages" / "revision" / "results" / "production_logs",
                 start_mps=_start_mps if production_runner is None else None,
                 stop_mps=_stop_mps if production_runner is None else None,
+                s3_options=_s3_options_from_args(args),
             )
             for case, replicate in result["failed"]:
                 print(f"failed: {case} replicate {replicate}")

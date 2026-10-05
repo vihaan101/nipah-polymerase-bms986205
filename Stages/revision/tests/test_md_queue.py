@@ -77,6 +77,24 @@ class MdQueueTests(unittest.TestCase):
         self.assertNotIn("--resume", fresh)
         self.assertIn("run_production_50ns_direct.py", " ".join(fresh))
 
+    def test_production_command_forwards_s3_flags(self) -> None:
+        command = run_revision.production_command(
+            {"case": "A_ERDRP_WT", "replicate": 3},
+            resume=False,
+            s3_options={
+                "archive_s3": True,
+                "s3_bucket": "nipah-archive",
+                "s3_prefix": "nipah",
+                "s3_profile": "default",
+                "max_steps": 2000,
+            },
+        )
+        joined = " ".join(command)
+        self.assertIn("--archive-s3", joined)
+        self.assertIn("--s3-bucket nipah-archive", joined)
+        self.assertIn("--s3-prefix nipah", joined)
+        self.assertIn("--max-steps 2000", joined)
+
     def test_each_batch_overlaps_concurrency_tasks(self) -> None:
         inflight = []
         peaks = []

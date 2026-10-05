@@ -346,6 +346,10 @@ def resolve_stage6_cuda_device() -> str | None:
         return None
     if not cuda_driver_available():
         return None
+    # Honor orchestrators (e.g. revision) that already pinned the process.
+    existing = os.environ.get("CUDA_VISIBLE_DEVICES", "").strip()
+    if existing:
+        return existing
     raw = os.environ.get("NIPAH_CUDA_DEVICE", "0").strip()
     return raw if raw else "0"
 
