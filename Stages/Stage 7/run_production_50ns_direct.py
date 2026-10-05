@@ -157,13 +157,17 @@ def _clear_run_outputs(case_results_dir: Path) -> None:
             path.unlink()
 
 
-def _validate_completed_outputs(case_results_dir: Path, topology_pdb_path: Path) -> tuple[bool, str | None]:
+def _validate_completed_outputs(
+    case_results_dir: Path,
+    topology_pdb_path: Path,
+    effective_total_steps: int,
+) -> tuple[bool, str | None]:
     """Verify that an already-completed local replicate really has a valid trajectory."""
     production_dcd = case_results_dir / "production.dcd"
     if not production_dcd.exists():
         return False, f"missing completed trajectory at {production_dcd}"
     try:
-        _validate(production_dcd, topology_pdb_path)
+        _validate(production_dcd, topology_pdb_path, effective_total_steps)
     except Exception as exc:
         return False, str(exc)
     return True, None
@@ -239,6 +243,35 @@ def load_stage6_manifest(stage6_results: Path) -> dict:
 # Core production runner
 # ---------------------------------------------------------------------------
 
+def _maybe_archive_s3(
+    case_results_dir: Path,
+    case_id: str,
+    replicate: int,
+    topology_pdb_path: Path,
+    results_root: Path,
+    effective_total_steps: int,
+    archive_config,
+) -> None:
+    if archive_config is None:
+        return
+    dcd = case_results_dir / "production.dcd"
+    if not dcd.exists():
+        return
+    if str(_COMMON_DIR) not in sys.path:
+        sys.path.insert(0, str(_COMMON_DIR))
+    from stage7_s3_archive import archive_replicate_dir
+
+    archive_replicate_dir(
+        case_results_dir,
+        case_id,
+        replicate,
+        topology_pdb_path,
+        archive_config,
+        effective_total_steps,
+        results_root=results_root,
+    )
+
+
 def run_production(
     case_id: str,
     case_data: dict,
@@ -246,11 +279,17 @@ def run_production(
     results_root: Path,
     stage6_results: Path,
     resume: bool = False,
+    effective_total_steps: int | None = None,
+    archive_config=None,
 ) -> dict:
     """Run a 0→50 ns direct production MD for one (case, replicate) pair.
 
     Returns a dict of output paths on success.
     """
+    total_steps = effective_total_steps if effective_total_steps is not None else TOTAL_STEPS
+    if total_steps < 1 or total_steps > TOTAL_STEPS:
+        raise ValueError(f"effective total steps must be in [1, {TOTAL_STEPS}], got {total_steps}")
+
     case_results_dir = results_root / case_id / f"replicate_{replicate}"
 
     print(f"\n{'='*80}")
@@ -320,14 +359,23 @@ def run_production(
     pdb = app.PDBFile(str(topology_pdb_path))
 
     if completed_step is not None:
-        if completed_step >= TOTAL_STEPS:
+        if completed_step >= total_steps:
             outputs_valid, validation_error = _validate_completed_outputs(
-                case_results_dir, topology_pdb_path
+                case_results_dir, topology_pdb_path, total_steps
             )
             if outputs_valid:
                 print(
                     f"  SKIP: {sentinel} exists and completed outputs revalidated "
                     f"({completed_step} steps)."
+                )
+                _maybe_archive_s3(
+                    case_results_dir,
+                    case_id,
+                    replicate,
+                    topology_pdb_path,
+                    results_root,
+                    total_steps,
+                    archive_config,
                 )
                 return _build_output_paths(case_results_dir)
             print(
@@ -341,7 +389,7 @@ def run_production(
         if completed_step is not None:
             print(
                 f"  Existing sentinel is for {completed_step} steps. Extending to "
-                f"{TOTAL_STEPS}."
+                f"{total_steps}."
             )
 
     # ------------------------------------------------------------------ #
@@ -368,14 +416,23 @@ def run_production(
         # Fresh start: bootstrap from Stage 6 equilibrated state
         _bootstrap_from_stage6_state(simulation, state_xml_path)
 
-    remaining_steps = TOTAL_STEPS - start_step
+    remaining_steps = total_steps - start_step
     if remaining_steps <= 0:
         outputs_valid, validation_error = _validate_completed_outputs(
-            case_results_dir, topology_pdb_path
+            case_results_dir, topology_pdb_path, total_steps
         )
         if outputs_valid:
-            print(f"  Already completed {TOTAL_STEPS} steps. Existing outputs validated.")
-            _write_sentinel(case_results_dir, case_id, replicate, TOTAL_STEPS)
+            print(f"  Already completed {total_steps} steps. Existing outputs validated.")
+            _write_sentinel(case_results_dir, case_id, replicate, total_steps)
+            _maybe_archive_s3(
+                case_results_dir,
+                case_id,
+                replicate,
+                topology_pdb_path,
+                results_root,
+                total_steps,
+                archive_config,
+            )
             return _build_output_paths(case_results_dir)
         if not resume:
             raise RuntimeError(
@@ -393,7 +450,7 @@ def run_production(
         simulation = _create_simulation(system, pdb.topology, case_seed)
         _bootstrap_from_stage6_state(simulation, state_xml_path)
         start_step = 0
-        remaining_steps = TOTAL_STEPS
+        remaining_steps = total_steps
 
     # ------------------------------------------------------------------ #
     # [4/4] Run production in chunks with dense checkpointing
@@ -413,7 +470,7 @@ def run_production(
         str(production_log), LOG_INTERVAL,
         step=True, time=True, potentialEnergy=True,
         temperature=True, progress=True, remainingTime=True,
-        speed=True, totalSteps=TOTAL_STEPS, append=append_mode
+        speed=True, totalSteps=total_steps, append=append_mode
     ))
     simulation.reporters.append(app.DCDReporter(
         str(production_dcd), DCD_INTERVAL, append=dcd_append_mode
@@ -439,10 +496,10 @@ def run_production(
 
         elapsed = time.time() - run_start
         current = simulation.currentStep
-        pct     = current / TOTAL_STEPS * 100
+        pct     = current / total_steps * 100
         print(
             f"  [{_ts()}] Chunk {chunk_i+1}/{n_chunks}: "
-            f"step {current:,}/{TOTAL_STEPS:,} ({pct:.1f}%) [{elapsed:.0f}s]"
+            f"step {current:,}/{total_steps:,} ({pct:.1f}%) [{elapsed:.0f}s]"
         )
         simulation.saveCheckpoint(str(production_chk))
 
@@ -467,10 +524,22 @@ def run_production(
     print(f"  Saved {production_pdb}")
 
     # Validate trajectory (imports MDAnalysis if available)
-    _validate(production_dcd, topology_pdb_path)
+    _validate(production_dcd, topology_pdb_path, total_steps)
 
     # Write TASK_COMPLETE sentinel
-    _write_sentinel(case_results_dir, case_id, replicate, simulation.currentStep)
+    final_step = simulation.currentStep
+    _write_sentinel(case_results_dir, case_id, replicate, final_step)
+
+    if final_step >= total_steps:
+        _maybe_archive_s3(
+            case_results_dir,
+            case_id,
+            replicate,
+            topology_pdb_path,
+            results_root,
+            total_steps,
+            archive_config,
+        )
 
     outputs = _build_output_paths(case_results_dir)
 
@@ -516,13 +585,13 @@ def _write_sentinel(case_results_dir: Path, case_id: str, replicate: int, final_
     print(f"  Sentinel written: {sentinel}")
 
 
-def _validate(dcd_path: Path, topology_path: Path):
+def _validate(dcd_path: Path, topology_path: Path, effective_total_steps: int = TOTAL_STEPS):
     """Run H3 trajectory validation; soft-fail if MDAnalysis unavailable."""
     try:
         from stage7_production_validation import validate_trajectory
         validate_trajectory(
             str(dcd_path), str(topology_path),
-            TIER_LABEL, TOTAL_STEPS, DCD_INTERVAL
+            TIER_LABEL, effective_total_steps, DCD_INTERVAL
         )
     except ImportError:
         print("  [H3] WARNING: stage7_production_validation not found. Skipping.")
@@ -569,6 +638,26 @@ def main():
         "--resume", action="store_true",
         help="Resume from this tier's own checkpoint if available (spot eviction recovery)."
     )
+    parser.add_argument(
+        "--max-steps", type=int, default=None,
+        help=f"Cap production at N steps (default {TOTAL_STEPS}; use 2000 for ~4 ps smoke)."
+    )
+    parser.add_argument(
+        "--archive-s3", action="store_true",
+        help="After successful completion, upload production.dcd to S3 and remove local copy."
+    )
+    parser.add_argument(
+        "--s3-bucket",
+        default=None,
+        help="S3 bucket (or STAGE7_S3_BUCKET; default nipah-archive when archive on).",
+    )
+    parser.add_argument("--s3-prefix", default=None, help="S3 key prefix (default nipah).")
+    parser.add_argument("--s3-profile", default=None, help="AWS CLI profile (default: default).")
+    parser.add_argument("--s3-region", default=None, help="AWS region (default us-east-1).")
+    parser.add_argument(
+        "--s3-delete-chk-above-mb", type=float, default=None,
+        help="Delete production.chk after archive if larger than N MB."
+    )
     args = parser.parse_args()
 
     try:
@@ -611,6 +700,25 @@ def main():
     print(f"[{TIER_LABEL}] Case: {args.case}  Replicate: {args.replicate}")
     print(f"[{TIER_LABEL}] Resume: {args.resume}")
 
+    if str(_COMMON_DIR) not in sys.path:
+        sys.path.insert(0, str(_COMMON_DIR))
+    from stage7_s3_archive import resolve_s3_config
+
+    archive_config, archive_on = resolve_s3_config(
+        archive_enabled=True if args.archive_s3 else None,
+        bucket=args.s3_bucket,
+        prefix=args.s3_prefix,
+        profile=args.s3_profile,
+        region=args.s3_region,
+        delete_chk_above_mb=args.s3_delete_chk_above_mb,
+    )
+    if archive_on:
+        print(f"[{TIER_LABEL}] S3 archive: s3://{archive_config.bucket}/{archive_config.prefix}/…")
+
+    effective_total = args.max_steps if args.max_steps is not None else TOTAL_STEPS
+    if args.max_steps is not None:
+        print(f"[{TIER_LABEL}] max-steps override: {effective_total}")
+
     manifest = load_stage6_manifest(stage6_results)
     cases    = manifest["cases"]
 
@@ -627,6 +735,8 @@ def main():
             results_root = results_root,
             stage6_results = stage6_results,
             resume       = args.resume,
+            effective_total_steps=effective_total,
+            archive_config=archive_config if archive_on else None,
         )
     except Exception as e:
         print(f"\nFATAL [{args.case} rep{args.replicate}]: {e}")
