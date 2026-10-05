@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-make_figure1_docking.py — Figure 1: five-seed mean docking affinities.
+make_figure1_docking.py — Figure 1: five-seed mean docking scores.
 
 Reads focused_100_seed_summary.csv from Stage 5 and produces the connected
 dot-plot showing WT vs W730A mean ± SD docking scores for BMS-986205 and
@@ -9,7 +9,7 @@ ERDRP-0519.
 Usage:
     python make_figure1_docking.py [--seed-summary PATH] [--out-dir PATH]
 
-Output:  eval_results_10ns_direct/comparison_figures/figure1_docking_affinities.{png,pdf}
+Output:  eval_results_50ns_direct/comparison_figures/figure1_docking_scores.{png,pdf}
 """
 
 import argparse
@@ -79,6 +79,7 @@ def apply_pub_style():
 
 def save_pub_figure(fig, path_stem):
     fig.savefig(path_stem + ".pdf", dpi=PUB_DPI, bbox_inches="tight")
+    fig.savefig(path_stem + ".png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -164,7 +165,7 @@ def plot_figure1(seed_data, out_dir):
     ax.set_xticklabels(tick_labels)
 
     # ── Axes decoration ───────────────────────────────────────────────────
-    ax.set_ylabel("Docking affinity (kcal/mol)")
+    ax.set_ylabel("AutoDock Vina score (kcal/mol)")
     ax.set_xlim(0.4, 5.6)
 
     # Set y-limits before compound label annotations so ax.get_ylim() is reliable
@@ -196,18 +197,18 @@ def plot_figure1(seed_data, out_dir):
     ax.axvline(3.0, color="lightgrey", linewidth=0.8, linestyle="--", zorder=1)
 
     ax.legend(loc="lower left", fontsize=7, framealpha=0.85, ncol=2)
-    ax.set_title("Five-seed mean docking affinities: WT vs W730A", fontsize=9)
+    ax.set_title("Five-seed mean AutoDock Vina scores: WT vs W730A", fontsize=9)
 
     fig.tight_layout()
-    out_stem = str(out_dir / "figure1_docking_affinities")
+    out_stem = str(out_dir / "figure1_docking_scores")
     save_pub_figure(fig, out_stem)
-    print(f"  figure1_docking_affinities.pdf")
+    print(f"  figure1_docking_scores.pdf")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate Figure 1: five-seed docking affinities WT vs W730A"
+        description="Generate Figure 1: five-seed docking scores WT vs W730A"
     )
     parser.add_argument(
         "--seed-summary", default=None,
@@ -215,7 +216,7 @@ def main():
     )
     parser.add_argument(
         "--out-dir", default=None,
-        help="Output directory (default: eval_results_10ns_direct/comparison_figures/)",
+        help="Output directory (default: eval_results_50ns_direct/comparison_figures/)",
     )
     args = parser.parse_args()
 
@@ -234,7 +235,7 @@ def main():
         out_dir = Path(args.out_dir).expanduser().resolve()
     else:
         script_dir = Path(__file__).resolve().parent
-        out_dir = script_dir.parent / "eval_results_10ns_direct" / "comparison_figures"
+        out_dir = script_dir.parent / "eval_results_50ns_direct" / "comparison_figures"
 
     out_dir.mkdir(parents=True, exist_ok=True)
 

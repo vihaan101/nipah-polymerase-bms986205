@@ -2,13 +2,13 @@
 """
 make_comparison_figures.py — 4-case comparison figures from downloaded eval results.
 
-Reads CSVs/JSONs from eval_results_10ns_direct/<CASE>/<metric_10ns_direct>/.
+Reads CSVs/JSONs from eval_results_50ns_direct/<CASE>/<metric_50ns_direct>/.
 No MDAnalysis needed — pandas + matplotlib only.
 
 Usage:
     python make_comparison_figures.py [--results-dir PATH]
 
-Output:  eval_results_10ns_direct/comparison_figures/
+Output:  eval_results_50ns_direct/comparison_figures/
 """
 
 import argparse
@@ -24,10 +24,10 @@ import matplotlib.pyplot as plt
 
 # ── Style constants (mirrors stage7_eval_common.py) ─────────────────────────
 CASE_META = {
-    "A_ERDRP_WT":  {"label": "A: ERDRP-0519 / WT (Control)",     "color": "#0072B2", "linestyle": "-",  "marker": "o"},
-    "B_ERDRP_MUT": {"label": "B: ERDRP-0519 / W730A (Failure)",   "color": "#E69F00", "linestyle": "--", "marker": "s"},
-    "C_BMS_WT":    {"label": "C: BMS-986205 / WT (Success)",      "color": "#009E73", "linestyle": "-.", "marker": "^"},
-    "D_BMS_MUT":   {"label": "D: BMS-986205 / W730A (Resistance)","color": "#CC79A7", "linestyle": ":",  "marker": "D"},
+    "A_ERDRP_WT":  {"label": "A: ERDRP-0519 / WT",     "color": "#0072B2", "linestyle": "-",  "marker": "o"},
+    "B_ERDRP_MUT": {"label": "B: ERDRP-0519 / W730A",  "color": "#E69F00", "linestyle": "--", "marker": "s"},
+    "C_BMS_WT":    {"label": "C: BMS-986205 / WT",     "color": "#009E73", "linestyle": "-.", "marker": "^"},
+    "D_BMS_MUT":   {"label": "D: BMS-986205 / W730A",  "color": "#CC79A7", "linestyle": ":",  "marker": "D"},
 }
 CASES = list(CASE_META.keys())
 PUB_DPI = 600
@@ -57,6 +57,7 @@ def apply_pub_style():
 
 def save_pub_figure(fig, path_stem):
     fig.savefig(path_stem + ".pdf", dpi=PUB_DPI, bbox_inches="tight")
+    fig.savefig(path_stem + ".png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -89,25 +90,30 @@ def _clean_bond_label(label):
 
 # ── 1. Backbone RMSD time series ─────────────────────────────────────────────
 def plot_backbone_rmsd(results_dir, out_dir):
-    fig, ax = plt.subplots(figsize=(10, 4))
+    fig, axes = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
     any_data = False
-    for case in CASES:
-        df = _load(results_dir, case, "rmsd_10ns_direct", f"{case}_backbone_rmsd.csv")
-        if df is None:
-            continue
-        m = CASE_META[case]
-        t = df["time_ns"]
-        mean, std = df["backbone_rmsd_A_mean"], df["backbone_rmsd_A_std"]
-        ax.plot(t, mean, color=m["color"], linestyle=m["linestyle"], lw=LINE_W, label=m["label"])
-        ax.fill_between(t, mean - std, mean + std, color=m["color"], alpha=FILL_A)
-        any_data = True
+    panels = [
+        (axes[0], "backbone_rmsd", "backbone_rmsd_A_mean", "backbone_rmsd_A_std", "Global backbone RMSD (Å)"),
+        (axes[1], "pocket_rmsd", "pocket_backbone_rmsd_A_mean", "pocket_backbone_rmsd_A_std", "Pocket backbone RMSD (Å)"),
+    ]
+    for ax, stem, mean_col, std_col, ylabel in panels:
+        for case in CASES:
+            df = _load(results_dir, case, "rmsd_50ns_direct", f"{case}_{stem}.csv")
+            if df is None:
+                continue
+            m = CASE_META[case]
+            t = df["time_ns"]
+            mean, std = df[mean_col], df[std_col]
+            ax.plot(t, mean, color=m["color"], linestyle=m["linestyle"], lw=LINE_W, label=m["label"])
+            ax.fill_between(t, mean - std, mean + std, color=m["color"], alpha=FILL_A)
+            any_data = True
+        ax.set_ylabel(ylabel)
+        ax.set_ylim(bottom=0)
+        ax.grid(True, alpha=0.3, linestyle="--")
     if not any_data:
         plt.close(fig); return
-    ax.set_xlabel("Time (ns)")
-    ax.set_ylabel("Backbone RMSD (Å)")
-    ax.set_ylim(bottom=0)
-    ax.grid(True, alpha=0.3, linestyle="--")
-    ax.legend(loc="upper left")
+    axes[1].set_xlabel("Time (ns)")
+    axes[0].legend(loc="upper left", ncol=2, fontsize=7)
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "backbone_rmsd_overlay"))
     print("  backbone_rmsd_overlay.pdf")
@@ -118,7 +124,7 @@ def plot_ligand_rmsd(results_dir, out_dir):
     fig, ax = plt.subplots(figsize=(10, 4))
     any_data = False
     for case in CASES:
-        df = _load(results_dir, case, "rmsd_10ns_direct", f"{case}_ligand_rmsd.csv")
+        df = _load(results_dir, case, "rmsd_50ns_direct", f"{case}_ligand_rmsd.csv")
         if df is None:
             continue
         m = CASE_META[case]
@@ -144,7 +150,7 @@ def plot_rmsf(results_dir, out_dir):
     fig, ax = plt.subplots(figsize=(10, 4))
     any_data = False
     for case in CASES:
-        df = _load(results_dir, case, "rmsf_10ns_direct", f"{case}_rmsf.csv")
+        df = _load(results_dir, case, "rmsf_50ns_direct", f"{case}_rmsf.csv")
         if df is None:
             continue
         m = CASE_META[case]
@@ -173,7 +179,7 @@ def plot_rmsf_pocket(results_dir, out_dir):
     y_max = 0.0
     lo, hi = POCKET_RESID_RANGE
     for case in CASES:
-        df = _load(results_dir, case, "rmsf_10ns_direct", f"{case}_rmsf.csv")
+        df = _load(results_dir, case, "rmsf_50ns_direct", f"{case}_rmsf.csv")
         if df is None:
             continue
         df = df[(df["resid"] >= lo) & (df["resid"] <= hi)]
@@ -205,7 +211,7 @@ def plot_mmgbsa_timeseries(results_dir, out_dir):
     fig, ax = plt.subplots(figsize=(10, 4))
     any_data = False
     for case in CASES:
-        df = _load(results_dir, case, "mmgbsa_10ns_direct", f"{case}_mmgbsa.csv")
+        df = _load(results_dir, case, "mmgbsa_50ns_direct", f"{case}_mmgbsa.csv")
         if df is None:
             continue
         m = CASE_META[case]
@@ -220,7 +226,7 @@ def plot_mmgbsa_timeseries(results_dir, out_dir):
     if not any_data:
         plt.close(fig); return
     ax.set_xlabel("Time (ns)")
-    ax.set_ylabel("ΔG bind (kcal/mol)")
+    ax.set_ylabel("MM-GBSA endpoint estimate (kcal/mol)")
     ax.grid(True, alpha=0.3, linestyle="--")
     ax.legend(loc="upper right")
     fig.tight_layout()
@@ -232,33 +238,54 @@ def plot_mmgbsa_timeseries(results_dir, out_dir):
 def plot_mmgbsa_bar(results_dir, out_dir):
     items = []
     for case in CASES:
-        df = _load(results_dir, case, "mmgbsa_10ns_direct", f"{case}_mmgbsa.csv")
-        if df is None:
+        rep_means = []
+        adjusted = []
+        for rep in range(1, 6):
+            df = _load(results_dir, case, "mmgbsa_50ns_direct", f"{case}_mmgbsa_rep{rep}.csv")
+            if df is None or "dG_bind_kcal_mol" not in df.columns:
+                continue
+            values = df["dG_bind_kcal_mol"].dropna().to_numpy(dtype=float)
+            if not len(values):
+                continue
+            mean = float(np.mean(values))
+            kT = 0.001987204 * 300.0
+            scaled = (values - mean) / kT
+            peak = float(np.max(scaled))
+            penalty = kT * (peak + np.log(np.mean(np.exp(scaled - peak))))
+            rep_means.append(mean)
+            adjusted.append(mean + penalty)
+        if len(rep_means) != 5:
+            print(f"  WARNING: {case}: expected 5 replicate files; found {len(rep_means)}")
             continue
         m = CASE_META[case]
-        n = len(df)
         items.append(dict(
             case=case, label=m["label"], color=m["color"],
-            mean=df["dG_bind_kcal_mol_mean"].mean(),
-            sem=df["dG_bind_kcal_mol_std"].mean() / np.sqrt(max(n, 1)),
+            raw_mean=float(np.mean(rep_means)),
+            raw_sem=float(np.std(rep_means, ddof=1) / np.sqrt(5)),
+            adjusted_mean=float(np.mean(adjusted)),
+            adjusted_sd=float(np.std(adjusted, ddof=1)),
         ))
     if not items:
         return
     fig, ax = plt.subplots(figsize=(6, 4))
     x = np.arange(len(items))
-    bars = ax.bar(x, [it["mean"] for it in items],
-                  yerr=[it["sem"] for it in items],
-                  color=[it["color"] for it in items],
-                  capsize=4, edgecolor="black", linewidth=0.5)
-    _hatches = ['', '///', '', 'xxx']
-    for bar, hatch in zip(bars, _hatches[:len(items)]):
-        bar.set_hatch(hatch)
+    for i, it in enumerate(items):
+        ax.errorbar(i - 0.12, it["raw_mean"], yerr=it["raw_sem"], fmt="o",
+                    color=it["color"], markeredgecolor="black", markeredgewidth=0.4,
+                    capsize=4, elinewidth=1.0, markersize=6, zorder=3)
+        ax.errorbar(i + 0.12, it["adjusted_mean"], yerr=it["adjusted_sd"], fmt="s",
+                    color=it["color"], markerfacecolor="white", markeredgewidth=1.2,
+                    capsize=4, elinewidth=1.0, markersize=6, zorder=3)
     ax.set_xticks(x)
-    ax.set_xticklabels([it["label"].split(":")[0] for it in items])
-    ax.set_ylabel("ΔG bind (kcal/mol)")
+    ax.set_xticklabels([it["label"].replace(" / ", "\n") for it in items], fontsize=7)
+    ax.set_ylabel("Endpoint estimate (kcal/mol)")
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"], hatch=_hatches[i] if i < 4 else '') for i, it in enumerate(items)]
-    ax.legend(handles, [it["label"] for it in items], fontsize=7, loc="lower right")
+    handles = [
+        plt.Line2D([0], [0], marker="o", color="black", linestyle="none", label="Raw MM-GBSA (SEM)"),
+        plt.Line2D([0], [0], marker="s", markerfacecolor="white", color="black",
+                   linestyle="none", label="Log-mean-exp adjusted (SD)"),
+    ]
+    ax.legend(handles=handles, fontsize=7, loc="lower right")
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "mmgbsa_bar"))
     print("  mmgbsa_bar.pdf")
@@ -269,7 +296,7 @@ def plot_pocket_volume_timeseries(results_dir, out_dir):
     fig, ax = plt.subplots(figsize=(10, 4))
     any_data = False
     for case in CASES:
-        df = _load(results_dir, case, "pocket_volume_10ns_direct", f"{case}_pocket_volume.csv")
+        df = _load(results_dir, case, "pocket_volume_50ns_direct", f"{case}_pocket_volume.csv")
         if df is None:
             continue
         m = CASE_META[case]
@@ -289,7 +316,7 @@ def plot_pocket_volume_timeseries(results_dir, out_dir):
     if not any_data:
         plt.close(fig); return
     ax.set_xlabel("Time (ns)")
-    ax.set_ylabel("Pocket volume (Å³)")
+    ax.set_ylabel("Pocket-atom convex-hull volume (Å³)")
     ax.grid(True, alpha=0.3, linestyle="--")
     ax.legend(loc="upper right")
     fig.tight_layout()
@@ -301,7 +328,7 @@ def plot_pocket_volume_timeseries(results_dir, out_dir):
 def plot_pocket_volume_bar(results_dir, out_dir):
     items = []
     for case in CASES:
-        df = _load(results_dir, case, "pocket_volume_10ns_direct", f"{case}_pocket_volume.csv")
+        df = _load(results_dir, case, "pocket_volume_50ns_direct", f"{case}_pocket_volume.csv")
         if df is None:
             continue
         m = CASE_META[case]
@@ -325,7 +352,7 @@ def plot_pocket_volume_bar(results_dir, out_dir):
         bar.set_hatch(hatch)
     ax.set_xticks(x)
     ax.set_xticklabels([it["label"].split(":")[0] for it in items])
-    ax.set_ylabel("Pocket volume (Å³)")
+    ax.set_ylabel("Pocket-atom convex-hull volume (Å³)")
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
     handles = [plt.Rectangle((0, 0), 1, 1, color=it["color"], hatch=_hatches[i] if i < 4 else '') for i, it in enumerate(items)]
     ax.legend(handles, [it["label"] for it in items], fontsize=7, loc="upper right")
@@ -338,7 +365,7 @@ def plot_pocket_volume_bar(results_dir, out_dir):
 def plot_hbond_comparison(results_dir, out_dir):
     all_dfs = {}
     for case in CASES:
-        df = _load(results_dir, case, "hbond_10ns_direct", f"{case}_hbonds.csv")
+        df = _load(results_dir, case, "hbond_50ns_direct", f"{case}_hbonds.csv")
         if df is not None:
             all_dfs[case] = df
 
@@ -388,7 +415,7 @@ def plot_hbond_comparison(results_dir, out_dir):
 def plot_plif_comparison(results_dir, out_dir):
     all_dfs = {}
     for case in CASES:
-        df = _load(results_dir, case, "plif_10ns_direct", f"{case}_plif_frequencies.csv", comment="#")
+        df = _load(results_dir, case, "plif_50ns_direct", f"{case}_plif_frequencies.csv", comment="#")
         if df is not None:
             all_dfs[case] = df
 
@@ -436,7 +463,7 @@ def plot_plif_comparison(results_dir, out_dir):
 def plot_contacts_grid(results_dir, out_dir):
     dfs = {}
     for case in CASES:
-        df = _load(results_dir, case, "contacts_10ns_direct", f"{case}_pocket_contacts.csv", index_col=0)
+        df = _load(results_dir, case, "contacts_50ns_direct", f"{case}_pocket_contacts.csv", index_col=0)
         if df is not None:
             df.index = df.index.astype(str)
             df.columns = df.columns.astype(str)
@@ -486,7 +513,7 @@ def plot_decomp_comparison(results_dir, out_dir):
     dfs = {}
     resname_map = {}
     for case in CASES:
-        df = _load(results_dir, case, "decomp_10ns_direct", f"{case}_perresidue_decomp.csv")
+        df = _load(results_dir, case, "decomp_50ns_direct", f"{case}_perresidue_decomp.csv")
         if df is None:
             continue
         df = df.set_index("resid")
@@ -530,22 +557,20 @@ def plot_decomp_comparison(results_dir, out_dir):
 
     for i, case in enumerate(CASES):
         m = CASE_META[case]
-        vals, errs = [], []
+        vals = []
         for rid in all_resids:
             if case in dfs and rid in dfs[case].index:
                 vals.append(float(dfs[case].loc[rid, "mean_dG_kcal_mol"]))
-                errs.append(float(dfs[case].loc[rid, "std_dG_kcal_mol"]))
             else:
-                vals.append(0.0); errs.append(0.0)
+                vals.append(0.0)
         offset = (i - 1.5) * bar_width
-        ax.bar(x + offset, vals, bar_width, yerr=errs, label=m["label"],
-               color=m["color"], capsize=2, edgecolor="black", linewidth=0.3,
-               error_kw={"linewidth": 0.5})
+        ax.bar(x + offset, vals, bar_width, label=m["label"],
+               color=m["color"], edgecolor="black", linewidth=0.3)
 
     ax.set_xticks(x)
     xlabels = [f"{rid}\n{resname_map.get(rid, '')}" for rid in all_resids]
     ax.set_xticklabels(xlabels, fontsize=8, rotation=45, ha="right")
-    ax.set_ylabel("ΔG decomp (kcal/mol)")
+    ax.set_ylabel("Endpoint decomposition term (kcal/mol)")
     ax.axhline(0, color="black", linewidth=0.5)
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
     ax.legend(fontsize=7, loc="lower right")
@@ -558,7 +583,7 @@ def plot_decomp_comparison(results_dir, out_dir):
 def plot_entropy_bar(results_dir, out_dir):
     rows = []
     for case in CASES:
-        path = results_dir / case / "entropy_10ns_direct" / "interaction_entropy_summary.csv"
+        path = results_dir / case / "entropy_50ns_direct" / "interaction_entropy_summary.csv"
         if not path.exists():
             continue
         try:
@@ -574,23 +599,15 @@ def plot_entropy_bar(results_dir, out_dir):
 
     fig, ax = plt.subplots(figsize=(6, 3.5))
     x = np.arange(len(rows))
-    bar_width = 0.25
-    specs = [
-        ("mean_dG_mmgbsa", "MM-GBSA ΔG",  "#4393C3", ''),
-        ("neg_TdS_IE",     "−TΔS (IE)",    "#D6604D", '///'),
-        ("dG_corrected",   "ΔG corrected", "#74C476", 'xxx'),
-    ]
-    for i, (col, lbl, clr, hatch) in enumerate(specs):
-        vals = [float(row[col]) if col in row.index else 0.0 for _, row in rows]
-        ax.bar(x + (i - 1) * bar_width, vals, bar_width,
-               label=lbl, color=clr, hatch=hatch, edgecolor="black", linewidth=0.4)
+    vals = [float(row["neg_TdS_IE"]) for _, row in rows]
+    ax.bar(x, vals, color=[CASE_META[c]["color"] for c, _ in rows],
+           edgecolor="black", linewidth=0.4)
 
     ax.set_xticks(x)
-    ax.set_xticklabels([CASE_META[c]["label"].split(":")[0] for c, _ in rows])
-    ax.set_ylabel("Energy (kcal/mol)")
-    ax.axhline(0, color="black", linewidth=0.5)
+    ax.set_xticklabels([CASE_META[c]["label"].replace(" / ", "\n") for c, _ in rows], fontsize=7)
+    ax.set_ylabel("Log-mean-exp penalty (kcal/mol)")
+    ax.set_ylim(bottom=0)
     ax.grid(True, axis="y", alpha=0.3, linestyle="--")
-    ax.legend(fontsize=7)
     fig.tight_layout()
     save_pub_figure(fig, str(out_dir / "entropy_bar"))
     print("  entropy_bar.pdf")
@@ -602,7 +619,7 @@ def plot_pca_variance(results_dir, out_dir):
     any_data = False
     for scope, ax in zip(["global", "pocket"], axes):
         for case in CASES:
-            df = _load(results_dir, case, "pca_10ns_direct", f"{case}_eigenvalues_{scope}.csv")
+            df = _load(results_dir, case, "pca_50ns_direct", f"{case}_eigenvalues_{scope}.csv")
             if df is None:
                 continue
             m = CASE_META[case]
@@ -635,15 +652,15 @@ def plot_pca_variance(results_dir, out_dir):
 def main():
     parser = argparse.ArgumentParser(description="Generate 4-case comparison figures from eval results CSVs")
     parser.add_argument("--results-dir", default=None,
-                        help="Path to eval_results_10ns_direct/ (auto-detected if omitted)")
+                        help="Path to eval_results_50ns_direct/ (auto-detected if omitted)")
     args = parser.parse_args()
 
     if args.results_dir:
         results_dir = Path(args.results_dir).expanduser().resolve()
     else:
-        # Auto-detect: sibling of analysis_10ns_direct/
+        # Auto-detect: sibling of analysis_50ns_direct/
         script_dir = Path(__file__).resolve().parent
-        results_dir = script_dir.parent / "eval_results_10ns_direct"
+        results_dir = script_dir.parent / "eval_results_50ns_direct"
 
     if not results_dir.exists():
         print(f"ERROR: results dir not found: {results_dir}")

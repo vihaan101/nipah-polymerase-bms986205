@@ -1,48 +1,49 @@
 import unittest
-import os
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
-# Add the script directory to path
-sys.path.append(str(Path(__file__).resolve().parents[1] / "analysis_10ns_direct"))
+COMMON_DIR = Path(__file__).resolve().parents[2] / "common"
+if str(COMMON_DIR) not in sys.path:
+    sys.path.insert(0, str(COMMON_DIR))
 
-from stage7_eval_common import robust_universe
+from md_eval.stage7_eval_common import robust_universe, set_universe_factory
+
 
 class TestRobustUniverse(unittest.TestCase):
+    def tearDown(self) -> None:
+        set_universe_factory(None)
+
     def test_robust_universe_success(self):
-        # Mock mda.Universe to succeed on first try
-        with patch("MDAnalysis.Universe") as mock_universe:
-            mock_u = MagicMock()
-            mock_universe.return_status = mock_u
-            
-            u = robust_universe("topo.pdb", "traj.dcd")
-            self.assertEqual(mock_universe.call_count, 1)
+        mock_universe = MagicMock()
+        set_universe_factory(mock_universe)
+        robust_universe("topo.pdb", "traj.dcd")
+        self.assertEqual(mock_universe.call_count, 1)
 
     def test_robust_universe_retry_success(self):
-        # Mock mda.Universe to fail twice and then succeed
-        with patch("MDAnalysis.Universe") as mock_universe:
-            mock_u = MagicMock()
-            mock_universe.side_effect = [
-                Exception("Reading DCD header failed"),
-                Exception("StopIteration"),
-                mock_u
-            ]
-            
-            with patch("time.sleep") as mock_sleep:
-                u = robust_universe("topo.pdb", "traj.dcd", attempts=5, delay=0)
-                self.assertEqual(mock_universe.call_count, 3)
-                self.assertEqual(mock_sleep.call_count, 2)
+        mock_universe = MagicMock()
+        mock_u = MagicMock()
+        mock_universe.side_effect = [
+            Exception("Reading DCD header failed"),
+            Exception("StopIteration"),
+            mock_u,
+        ]
+        set_universe_factory(mock_universe)
+
+        with unittest.mock.patch("time.sleep"):
+            u = robust_universe("topo.pdb", "traj.dcd", attempts=5, delay=0)
+            self.assertEqual(mock_universe.call_count, 3)
+            self.assertEqual(u, mock_u)
 
     def test_robust_universe_fail_all(self):
-        # Mock mda.Universe to fail all attempts
-        with patch("MDAnalysis.Universe") as mock_universe:
-            mock_universe.side_effect = Exception("Reading DCD header failed")
-            
-            with patch("time.sleep") as mock_sleep:
-                with self.assertRaises(Exception):
-                    robust_universe("topo.pdb", "traj.dcd", attempts=3, delay=0)
-                self.assertEqual(mock_universe.call_count, 3)
+        mock_universe = MagicMock(side_effect=Exception("Reading DCD header failed"))
+        set_universe_factory(mock_universe)
+
+        with unittest.mock.patch("time.sleep"):
+            with self.assertRaises(Exception):
+                robust_universe("topo.pdb", "traj.dcd", attempts=3, delay=0)
+            self.assertEqual(mock_universe.call_count, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

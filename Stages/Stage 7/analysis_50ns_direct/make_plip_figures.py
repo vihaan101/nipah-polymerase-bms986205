@@ -34,7 +34,7 @@ CASES = [
         "key": "BMS_WT",
         "png": "BMS_WT_seed42_plip.png",
         "out": "BMS_WT_seed42_plip",
-        "title": "C: BMS-986205 / WT (Success)",
+        "title": "C: BMS-986205 / WT",
         "subtitle": "PLIP — BMS_WT_SEED42",
         "color": "#009E73",
         "interactions": {
@@ -54,7 +54,7 @@ CASES = [
         "key": "BMS_MUT",
         "png": "BMS_MUT_seed42_plip.png",
         "out": "BMS_MUT_seed42_plip",
-        "title": "D: BMS-986205 / W730A (Resistance)",
+        "title": "D: BMS-986205 / W730A",
         "subtitle": "PLIP — BMS_MUT_SEED42",
         "color": "#CC79A7",
         "interactions": {
@@ -141,6 +141,7 @@ def make_plip_figure(case_meta, out_dir):
 
     out_stem = str(out_dir / case_meta["out"])
     fig.savefig(out_stem + ".pdf", dpi=PUB_DPI, bbox_inches="tight")
+    fig.savefig(out_stem + ".png", dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"  {case_meta['out']}.pdf")
 
@@ -154,7 +155,7 @@ def main():
         out_dir = Path(args.out_dir).expanduser().resolve()
     else:
         script_dir = Path(__file__).resolve().parent
-        out_dir = script_dir.parent / "eval_results_10ns_direct" / "comparison_figures"
+        out_dir = script_dir.parent / "eval_results_50ns_direct" / "comparison_figures"
 
     if not out_dir.exists():
         print(f"ERROR: output dir not found: {out_dir}")

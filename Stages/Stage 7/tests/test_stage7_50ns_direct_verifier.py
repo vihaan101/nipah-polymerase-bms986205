@@ -10,36 +10,35 @@ import unittest
 
 
 TESTS_DIR = Path(__file__).resolve().parent
-STAGE7_DIR = TESTS_DIR.parent
-MODULE_PATH = STAGE7_DIR / "analysis_10ns_direct" / "verify_eval_ready_trajectories.py"
+COMMON_DIR = TESTS_DIR.parents[1] / "common"
+if str(COMMON_DIR) not in sys.path:
+    sys.path.insert(0, str(COMMON_DIR))
 
 
 def _load_verifier_module():
-    fake_validation = types.ModuleType("stage7_production_validation")
-    fake_validation.TIER_TIME_RANGES = {"10ns_direct": (4.0, 10000.0)}
+    fake_validation = types.ModuleType("md_eval.stage7_production_validation")
+    fake_validation.TIER_TIME_RANGES = {"50ns_direct": (4.0, 50000.0)}
 
     def _validate_trajectory(*_args, **_kwargs):
         return None
 
     fake_validation.validate_trajectory = _validate_trajectory
-    sys.modules["stage7_production_validation"] = fake_validation
+    sys.modules["md_eval.stage7_production_validation"] = fake_validation
 
-    analysis_dir = str(MODULE_PATH.parent)
-    if analysis_dir not in sys.path:
-        sys.path.append(analysis_dir)
+    import importlib
 
-    spec = importlib.util.spec_from_file_location("stage7_verify_eval_ready_trajectories", MODULE_PATH)
-    module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
+    return importlib.import_module("md_eval.verify_eval_ready_trajectories")
 
 
 VERIFIER = _load_verifier_module()
 
 
 class Stage710nsDirectVerifierTests(unittest.TestCase):
+    def test_protocol_is_50ns_direct(self) -> None:
+        self.assertEqual(VERIFIER.TOTAL_STEPS, 25_000_000)
+        self.assertEqual(VERIFIER.TIER_LABEL, "50ns_direct")
+        self.assertEqual(VERIFIER.EXPECTED_FRAMES, 12_500)
+
     def setUp(self) -> None:
         self.original_load_stage6_cases = VERIFIER.load_stage6_cases
         self.original_resolve_stage6_path = VERIFIER.resolve_stage6_path
@@ -170,7 +169,7 @@ class Stage710nsDirectVerifierTests(unittest.TestCase):
         manifest = {
             "generated_at": "2026-04-26T00:00:00Z",
             "source_root": "/tmp/results",
-            "tier": "10ns_direct",
+            "tier": "50ns_direct",
             "summary": {"evaluation_ready": 1, "not_ready": 1},
             "cases": {
                 "A_ERDRP_WT": {

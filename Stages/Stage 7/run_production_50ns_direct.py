@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 """
-Production MD Protocol (0→10 ns direct bootstrap) -- Single Replicate Mode
+Production MD Protocol (0→50 ns direct bootstrap) -- Single Replicate Mode
 ===========================================================================
-Runs 5,000,000 steps (10 ns at 2 fs/step) per replicate,
-starting directly from Stage 6 equilibrated_state_xml with NO prior-tier
+Runs 25,000,000 steps (50 ns at 2 fs/step) per replicate,
+starting directly from Stage 6 equilibrated_state_xml with no prior-tier
 checkpoint dependency.
 
-Key differences from run_production_10ns_v2.py:
-  - Bootstraps from equilibrated_state_xml (not a 2ns production.chk)
   - Operates on a single (case_id, replicate_id) pair per invocation
   - Outputs to <results-root>/<case_id>/replicate_<N>/
   - Per-replicate Langevin seed: sha256("{case}_rep{N}") % 2^31
   - Writes TASK_COMPLETE sentinel on success
-  - Supports --resume for Spot VM eviction recovery
+  - Supports --resume after interrupted runs (cluster preemption, etc.)
 
 Usage:
-  python run_production_10ns_direct_v2.py \
+  python run_production_50ns_direct.py \
     --case A_ERDRP_WT --replicate 1 \
-    --results-root /path/to/stage7_10ns_direct/results \
+    --results-root /path/to/stage7_50ns_direct/results \
     --stage6-results "/path/to/Stage 6/results" \
     [--resume]
 """
@@ -25,6 +23,7 @@ import argparse
 import gc
 import hashlib
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -35,11 +34,22 @@ from openmm import app, unit
 
 sys.stdout.reconfigure(line_buffering=True)
 
+_STAGE7_DIR = Path(__file__).resolve().parent
+_COMMON_DIR = _STAGE7_DIR.parent / "common"
+
+
+def _import_docking_utils():
+    if str(_COMMON_DIR) not in sys.path:
+        sys.path.insert(0, str(_COMMON_DIR))
+    import docking_utils
+
+    return docking_utils
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-TIER_LABEL    = "10ns_direct"
-TOTAL_STEPS   = 5_000_000        # 10 ns @ 2 fs/step
+TIER_LABEL    = "50ns_direct"
+TOTAL_STEPS   = 25_000_000        # 50 ns @ 2 fs/step
 CHUNK_SIZE    = 500_000           # ~1 ns per chunk; checkpoint every chunk
 TEMPERATURE   = 300 * unit.kelvin
 PRESSURE      = 1.0 * unit.bar
@@ -172,21 +182,39 @@ def _bootstrap_from_stage6_state(simulation, state_xml_path: Path) -> None:
 
 def _create_simulation(system, topology, case_seed: int):
     """Build a fresh simulation so replay starts from a clean OpenMM step counter."""
-    for platform_name in ["CUDA", "OpenCL"]:
+
+    def _integrator():
         integrator = mm.LangevinMiddleIntegrator(TEMPERATURE, FRICTION, TIMESTEP)
         integrator.setRandomNumberSeed(case_seed)
-        try:
-            platform = mm.Platform.getPlatformByName(platform_name)
-            props = {"Precision": "mixed"}
-            simulation = app.Simulation(topology, system, integrator, platform, props)
-            print(f"  Using {platform_name} platform")
-            return simulation
-        except Exception:
-            continue
-    raise RuntimeError(
-        "No GPU platform available (tried CUDA, OpenCL). "
-        "Production MD on CPU is not permitted."
-    )
+        return integrator
+
+    try:
+        du = _import_docking_utils()
+        simulation, platform_name = du.create_openmm_simulation(
+            topology, system, _integrator
+        )
+    except ModuleNotFoundError:
+        platform_name = None
+        simulation = None
+        for platform_name in ("CUDA", "OpenCL"):
+            try:
+                platform = mm.Platform.getPlatformByName(platform_name)
+                simulation = app.Simulation(
+                    topology, system, _integrator(), platform, {"Precision": "mixed"}
+                )
+                break
+            except Exception:
+                simulation = None
+                continue
+        if simulation is None:
+            platform_name = "CPU"
+    if platform_name == "CPU" or simulation is None:
+        raise RuntimeError(
+            "No GPU platform available (tried CUDA, OpenCL). "
+            "Production MD on CPU is not permitted."
+        )
+    print(f"  Using {platform_name} platform")
+    return simulation
 
 
 def load_stage6_manifest(stage6_results: Path) -> dict:
@@ -196,13 +224,13 @@ def load_stage6_manifest(stage6_results: Path) -> dict:
         manifest = json.load(fh)
     cases = manifest.get("cases")
     if not cases:
-        raise RuntimeError("[10ns_direct] Stage 6 manifest has no 'cases' dict")
+        raise RuntimeError("[50ns_direct] Stage 6 manifest has no 'cases' dict")
     required = ["system_xml", "topology_pdb", "equilibrated_state_xml"]
     for cid, cdata in cases.items():
         missing = [k for k in required if not cdata.get(k)]
         if missing:
             raise RuntimeError(
-                f"[10ns_direct] Case '{cid}' missing Stage 6 keys: {missing}"
+                f"[50ns_direct] Case '{cid}' missing Stage 6 keys: {missing}"
             )
     return manifest
 
@@ -219,7 +247,7 @@ def run_production(
     stage6_results: Path,
     resume: bool = False,
 ) -> dict:
-    """Run a 0→10 ns direct production MD for one (case, replicate) pair.
+    """Run a 0→50 ns direct production MD for one (case, replicate) pair.
 
     Returns a dict of output paths on success.
     """
@@ -508,7 +536,7 @@ def _validate(dcd_path: Path, topology_path: Path):
 
 def main():
     parser = argparse.ArgumentParser(
-        description=f"Stage 7: Production MD 0→10 ns direct bootstrap ({TIER_LABEL})"
+        description=f"Stage 7: Production MD 0→50 ns direct bootstrap ({TIER_LABEL})"
     )
     parser.add_argument(
         "--case", required=True,
@@ -523,7 +551,7 @@ def main():
         "--results-root", type=Path, default=None,
         help=(
             "Root directory for output. Outputs go to <results-root>/<case>/"
-            "replicate_<N>/. Defaults to <script_dir>/stage7_10ns_direct/results"
+            "replicate_<N>/. Defaults to <repo>/stage7_50ns_direct/results"
         )
     )
     parser.add_argument(
@@ -543,6 +571,26 @@ def main():
     )
     args = parser.parse_args()
 
+    try:
+        du = _import_docking_utils()
+        du.apply_openmm_runtime_env(1)
+        platform = du.resolve_openmm_platform()
+        print(f"[{TIER_LABEL}] OpenMM equilibration platform: {platform}")
+        if (
+            du.cuda_driver_available()
+            and not du.openmm_cuda_usable()
+            and platform == "OpenCL"
+        ):
+            print(
+                f"[{TIER_LABEL}] Note: OpenMM CUDA unavailable (PTX/driver); "
+                "using OpenCL on GPU."
+            )
+        gpu = os.environ.get("CUDA_VISIBLE_DEVICES")
+        if gpu is not None:
+            print(f"[{TIER_LABEL}] CUDA_VISIBLE_DEVICES={gpu}")
+    except ModuleNotFoundError:
+        print(f"[{TIER_LABEL}] Warning: docking_utils unavailable; OpenMM env not auto-configured.")
+
     if args.replicate < 1:
         print(f"FATAL: --replicate must be >= 1, got {args.replicate}")
         sys.exit(1)
@@ -555,7 +603,7 @@ def main():
         project_root / "Stages" / "Stage 6" / "results"
     )
     results_root = args.results_root or (
-        script_dir / "stage7_10ns_direct" / "results"
+        script_dir.parents[2] / "stage7_50ns_direct" / "results"
     )
 
     print(f"[{TIER_LABEL}] Stage 6 results:  {stage6_results}")

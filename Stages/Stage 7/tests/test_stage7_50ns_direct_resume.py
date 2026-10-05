@@ -11,7 +11,7 @@ import unittest
 
 TESTS_DIR = Path(__file__).resolve().parent
 STAGE7_DIR = TESTS_DIR.parent
-MODULE_PATH = STAGE7_DIR / "run_production_10ns_direct_v2.py"
+MODULE_PATH = STAGE7_DIR / "run_production_50ns_direct.py"
 
 
 def _load_runner_module():
@@ -25,7 +25,7 @@ def _load_runner_module():
     )
     sys.modules["openmm"] = fake_openmm
 
-    spec = importlib.util.spec_from_file_location("stage7_run_production_10ns_direct_v2", MODULE_PATH)
+    spec = importlib.util.spec_from_file_location("stage7_run_production_50ns_direct", MODULE_PATH)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
@@ -36,6 +36,12 @@ RUNNER = _load_runner_module()
 
 
 class Stage710nsDirectResumeTests(unittest.TestCase):
+    def test_protocol_is_50ns_direct(self) -> None:
+        self.assertEqual(RUNNER.TOTAL_STEPS, 25_000_000)
+        self.assertEqual(RUNNER.TIER_LABEL, "50ns_direct")
+        self.assertEqual(RUNNER.CHUNK_SIZE, 500_000)
+        self.assertEqual(RUNNER.DCD_INTERVAL, 2_000)
+
     def setUp(self) -> None:
         self.original_mm = RUNNER.mm
         self.original_app = RUNNER.app
@@ -132,8 +138,8 @@ class Stage710nsDirectResumeTests(unittest.TestCase):
             )
 
             self.assertEqual(calls, ["validate", "validate"])
-            self.assertEqual((case_dir / "production.chk").read_text(), "step=5000000")
-            self.assertIn("current-step=5000000", (case_dir / "production.dcd").read_text())
+            self.assertEqual((case_dir / "production.chk").read_text(), "step=25000000")
+            self.assertIn("current-step=25000000", (case_dir / "production.dcd").read_text())
             self.assertNotEqual((case_dir / "production_final.pdb").read_text(), "stale-pdb")
             sentinel_payload = json.loads((case_dir / "TASK_COMPLETE").read_text())
             self.assertEqual(sentinel_payload["final_step"], RUNNER.TOTAL_STEPS)
@@ -170,9 +176,9 @@ class Stage710nsDirectResumeTests(unittest.TestCase):
             )
 
             self.assertEqual(calls, ["validate", "validate"])
-            self.assertEqual((case_dir / "production.chk").read_text(), "step=5000000")
-            self.assertIn("current-step=5000000", (case_dir / "production.dcd").read_text())
-            self.assertNotIn("10000000", (case_dir / "production.dcd").read_text())
+            self.assertEqual((case_dir / "production.chk").read_text(), "step=25000000")
+            self.assertIn("current-step=25000000", (case_dir / "production.dcd").read_text())
+            self.assertNotIn("50000000", (case_dir / "production.dcd").read_text())
             sentinel_payload = json.loads((case_dir / "TASK_COMPLETE").read_text())
             self.assertEqual(sentinel_payload["final_step"], RUNNER.TOTAL_STEPS)
 

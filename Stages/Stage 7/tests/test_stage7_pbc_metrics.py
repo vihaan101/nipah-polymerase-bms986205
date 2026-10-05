@@ -1,18 +1,15 @@
 from __future__ import annotations
 
+import sys
 import unittest
+from pathlib import Path
 
 import numpy as np
 
-from pathlib import Path
-import sys
+COMMON_DIR = Path(__file__).resolve().parents[2] / "common"
+sys.path.insert(0, str(COMMON_DIR))
 
-
-TESTS_DIR = Path(__file__).resolve().parent
-STAGE7_DIR = TESTS_DIR.parent
-sys.path.insert(0, str(STAGE7_DIR))
-
-from stage7_eval_common import minimum_image_displacements, minimum_image_distance
+from md_eval.stage7_eval_common import minimum_image_displacements, minimum_image_distance
 
 
 class Stage7PBCMetricTests(unittest.TestCase):

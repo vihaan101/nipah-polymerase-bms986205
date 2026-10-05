@@ -13,7 +13,7 @@ Usage:
     python inspect_figures.py [--pdf-dir PATH] [--out-dir PATH]
 
 Defaults:
-  --pdf-dir  eval_results_10ns_direct/comparison_figures_legacy/
+  --pdf-dir  eval_results_50ns_direct/comparison_figures_legacy/
   --out-dir  <pdf-dir>/screenshots/
 """
 
@@ -160,7 +160,7 @@ def main():
 
     pdf_dir = (
         Path(args.pdf_dir).expanduser().resolve() if args.pdf_dir
-        else script_dir.parent / "eval_results_10ns_direct" / "comparison_figures_legacy"
+        else script_dir.parent / "eval_results_50ns_direct" / "comparison_figures_legacy"
     )
     if not pdf_dir.exists():
         print(f"ERROR: PDF directory not found: {pdf_dir}")
