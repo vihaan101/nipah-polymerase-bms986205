@@ -1,0 +1,33 @@
+{
+  "ImageId": "ami-REPLACE_AFTER_BAKE",
+  "InstanceType": "g5.xlarge",
+  "IamInstanceProfile": {
+    "Name": "NipahStage7EC2Role"
+  },
+  "BlockDeviceMappings": [
+    {
+      "DeviceName": "/dev/sda1",
+      "Ebs": {
+        "VolumeSize": 200,
+        "VolumeType": "gp3",
+        "DeleteOnTermination": true
+      }
+    }
+  ],
+  "InstanceMarketOptions": {
+    "MarketType": "spot",
+    "SpotOptions": {
+      "SpotInstanceType": "one-time",
+      "InstanceInterruptionBehavior": "terminate"
+    }
+  },
+  "UserData": "<base64 of Stages/aws/instance_bootstrap.sh>",
+  "TagSpecifications": [
+    {
+      "ResourceType": "instance",
+      "Tags": [
+        { "Key": "Project", "Value": "nipah-stage7" }
+      ]
+    }
+  ]
+}

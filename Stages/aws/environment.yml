@@ -1,0 +1,14 @@
+name: nipah-md
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - openmm
+  - numpy
+  - scipy
+  - mdanalysis
+  - matplotlib
+  - pandas
+  # Optional eval extras (uncomment after pilot if needed):
+  # - plip
+  # - freesasa
