@@ -2,6 +2,8 @@
 
 Run OpenMM Stage 7 production on **g5.xlarge Spot** with a **custom AMI** (conda `nipah-md` only). Application code and Stage 6 inputs are refreshed on each launch via `git clone` and S3 sync.
 
+**GPU quotas (us-east-2):** EC2 must allow **Running On-Demand G and VT** (`L-DB2E81BA`) and **All G and VT Spot** (`L-3819A6DF`) vCPUs ≥ 4 for one `g4dn.xlarge`/`g5.xlarge`. New accounts often start at **0**; request increases in Service Quotas before baking or launching pilots.
+
 **Regions (defaults in `nipah-aws-env.sh`):**
 
 | Resource | Default region |

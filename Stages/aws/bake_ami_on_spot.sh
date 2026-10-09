@@ -16,7 +16,7 @@ NIPAH_REPO_BRANCH="${NIPAH_REPO_BRANCH:-main}"
 SG_NAME="${SG_NAME:-nipah-stage7-ec2}"
 AMI_ENV_FILE="${SCRIPT_DIR}/ami-id.env"
 
-log() { echo "[bake_ami_on_spot] $*"; }
+log() { echo "[bake_ami_on_spot] $*" >&2; }
 
 ensure_security_group() {
   local vpc_id sg_id
@@ -73,19 +73,47 @@ EOF
 SG_ID="$(ensure_security_group)"
 log "Launching Spot ${BUILDER_TYPE} (max \$${SPOT_MAX_PRICE}/hr) from ${DL_AMI}..."
 
-INSTANCE_ID="$(aws ec2 run-instances \
-  --region "${AWS_REGION}" \
-  --image-id "${DL_AMI}" \
-  --instance-type "${BUILDER_TYPE}" \
-  --iam-instance-profile "Name=${IAM_PROFILE}" \
-  --security-group-ids "${SG_ID}" \
-  --instance-market-options "$(printf '{"MarketType":"spot","SpotOptions":{"SpotInstanceType":"one-time","InstanceInterruptionBehavior":"terminate","MaxPrice":"%s"}}' "${SPOT_MAX_PRICE}")" \
-  --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":80,"VolumeType":"gp3","DeleteOnTermination":true}}]' \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=Project,Value=nipah-stage7},{Key=Role,Value=ami-bake}]' \
-  --user-data "file://${USER_DATA}" \
-  --query 'Instances[0].InstanceId' \
-  --output text)"
+INSTANCE_ID=""
+SUBNETS=()
+while IFS= read -r sn; do
+  [[ -n "${sn}" ]] && SUBNETS+=("${sn}")
+done < <(aws ec2 describe-subnets --region "${AWS_REGION}" \
+  --filters Name=default-for-az,Values=true \
+  --query 'sort_by(Subnets,&AvailabilityZone)[].SubnetId' --output text | tr '\t' '\n')
+BUILDER_TYPES=("${BUILDER_TYPE}")
+if [[ "${BUILDER_FALLBACK_G5:-1}" == "1" ]]; then
+  BUILDER_TYPES+=("g5.xlarge")
+fi
+for try_type in "${BUILDER_TYPES[@]}"; do
+  for subnet in "${SUBNETS[@]}"; do
+    [[ -n "${subnet}" ]] || continue
+    log "Trying ${try_type} in subnet ${subnet}..."
+    if err="$(aws ec2 run-instances \
+      --region "${AWS_REGION}" \
+      --image-id "${DL_AMI}" \
+      --instance-type "${try_type}" \
+      --subnet-id "${subnet}" \
+      --iam-instance-profile "Name=${IAM_PROFILE}" \
+      --security-group-ids "${SG_ID}" \
+      --instance-market-options "$(printf '{"MarketType":"spot","SpotOptions":{"SpotInstanceType":"one-time","InstanceInterruptionBehavior":"terminate","MaxPrice":"%s"}}' "${SPOT_MAX_PRICE}")" \
+      --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":80,"VolumeType":"gp3","DeleteOnTermination":true}}]' \
+      --tag-specifications 'ResourceType=instance,Tags=[{Key=Project,Value=nipah-stage7},{Key=Role,Value=ami-bake}]' \
+      --user-data "file://${USER_DATA}" \
+      --query 'Instances[0].InstanceId' \
+      --output text 2>&1)"; then
+      INSTANCE_ID="${err}"
+      BUILDER_TYPE="${try_type}"
+      break 2
+    else
+      log "  failed: ${err//$'\n'/ }"
+    fi
+  done
+done
 rm -f "${USER_DATA}"
+if [[ -z "${INSTANCE_ID}" ]]; then
+  log "FATAL: Spot launch failed in all default subnets (tried ${BUILDER_TYPES[*]})"
+  exit 1
+fi
 log "Builder instance: ${INSTANCE_ID}"
 
 aws ec2 wait instance-running --region "${AWS_REGION}" --instance-ids "${INSTANCE_ID}"
