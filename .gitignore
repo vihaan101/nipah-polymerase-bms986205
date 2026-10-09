@@ -41,9 +41,13 @@ Stages/compute.txt
 
 # Shell runners (local only — use Python entrypoints)
 Stages/**/*.sh
+!Stages/aws/**/*.sh
 
 # Markdown notes (local only)
 Stages/**/*.md
+!Stages/aws/**/*.md
+!Stages/aws/ami-id.env
+Stages/sunlab-serv-03-hardware.md
 
 # Local ops / test pin lists (not versioned)
 Stages/requirements-test.txt
